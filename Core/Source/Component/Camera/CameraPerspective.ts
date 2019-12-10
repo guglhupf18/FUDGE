@@ -15,7 +15,6 @@ namespace FudgeCore {
         public fieldOfView: number = 45; // The camera's sensorangle.
         public aspectRatio: number = 1.0;
         public direction: FIELD_OF_VIEW = FIELD_OF_VIEW.DIAGONAL;
-        public test: number = 0;
         public near: number = 1;
         public far: number = 2000;
 

@@ -9,7 +9,7 @@ namespace Minimal {
 
         let viewport: ƒ.Viewport = new ƒ.Viewport();
 
-        let mesh: ƒ.MeshQuad = new ƒ.MeshQuad();
+        let mesh: ƒ.MeshCube = new ƒ.MeshCube();
         let mtrSolidWhite: ƒ.Material = new ƒ.Material("SolidWhite", ƒ.ShaderUniColor, new ƒ.CoatColored(ƒ.Color.WHITE));
 
         let cmpMesh: ƒ.ComponentMesh = new ƒ.ComponentMesh(mesh);
@@ -18,12 +18,33 @@ namespace Minimal {
         node.addComponent(cmpMesh);
         node.addComponent(cmpMaterial);
 
+        let mesh2: ƒ.MeshCube = new ƒ.MeshCube();
+        let mtrSolidWhite2: ƒ.Material = new ƒ.Material("SolidBlue", ƒ.ShaderUniColor, new ƒ.CoatColored(ƒ.Color.BLUE));
 
-        let camera: ƒ.ComponentCamera = new ƒ.ComponentCamera();
-        camera.pivot.translate(new ƒ.Vector3(0, 0, 2));
+        let cmpMesh2: ƒ.ComponentMesh = new ƒ.ComponentMesh(mesh2);
+        let cmpMaterial2: ƒ.ComponentMaterial = new ƒ.ComponentMaterial(mtrSolidWhite2);
+        let node2: ƒ.Node = new ƒ.Node("Quad2");
+        let cmpTransform: ƒ.ComponentTransform = new ƒ.ComponentTransform();
+        cmpTransform.local.translation = new ƒ.Vector3(1, 1, 1); 
+        node2.addComponent(cmpMesh2);
+        node2.addComponent(cmpMaterial2);
+        node2.addComponent(cmpTransform);
 
-        viewport.initialize("Viewport", node, camera, canvas);
+        let baseNode: ƒ.Node = new ƒ.Node("Base");
+        baseNode.appendChild(node);
+        baseNode.appendChild(node2);
+        let cmpCamera: ƒ.ComponentCamera = new ƒ.ComponentCamera();
+
+        cmpCamera.setType(ƒ.CameraPerspective);
+       // let camera: ƒ.CameraOrthographic = new ƒ.CameraOrthographic();
+      //  let cameraPer: ƒ.CameraPerspective = new ƒ.CameraPerspective();
+     //   camera.setProjectionBorder(1, 1, -100, 100);
+      //  cmpCamera.camera = camera;
         
+       // cmpCamera.pivot.translate(new ƒ.Vector3(0, 0, 5));
+       
+        
+        viewport.initialize("Viewport", baseNode, cmpCamera, canvas);
         ƒ.RenderManager.update();
         viewport.draw();
     }

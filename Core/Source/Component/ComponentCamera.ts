@@ -7,15 +7,13 @@ namespace FudgeCore {
      */
     export class ComponentCamera extends Component {
 
-        // tslint:disable-next-line: no-any
-        public camera: any; // The camera used to render
+        public camera: Camera; // The camera used to render
 
         public pivot: Matrix4x4 = Matrix4x4.IDENTITY;
      
 
         public setType<T extends Camera>(_class: new () => T): void {
             this.camera = new _class(); 
-          //  console.log(this.camera);
         }
 
     
@@ -23,12 +21,6 @@ namespace FudgeCore {
         //#region Transfer
         public serialize(): Serialization {
             let serialization: Serialization = {
-                backgroundColor: this.camera.backgroundColor,
-                backgroundEnabled: this.camera.backgroundEnabled,
-                projection: this.camera.projection,
-                fieldOfView: this.camera.fieldOfView,
-                direction: this.camera.direction,
-                aspect: this.camera.aspectRatio,
                 pivot: this.pivot.serialize(),
                 [super.constructor.name]: super.serialize()
             };
@@ -36,12 +28,6 @@ namespace FudgeCore {
         }
 
         public deserialize(_serialization: Serialization): Serializable {
-            this.camera.backgroundColor = _serialization.backgroundColor;
-            this.camera.backgroundEnabled = _serialization.backgroundEnabled;
-            this.camera.projection = _serialization.projection;
-            this.camera.fieldOfView = _serialization.fieldOfView;
-            this.camera.aspectRatio = _serialization.aspect;
-            this.camera.direction = _serialization.direction;
             this.pivot.deserialize(_serialization.pivot);
             super.deserialize(_serialization[super.constructor.name]);
             switch (this.camera.projection) {

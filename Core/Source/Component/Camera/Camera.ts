@@ -22,7 +22,7 @@ namespace FudgeCore {
         public projection: PROJECTION = null; // the projection of the camera (default = perspective)
         public transform: Matrix4x4 = new Matrix4x4; // The matrix to multiply each scene objects transformation by, to determine where it will be drawn.
 
-        public backgroundColor: Color = new Color(0, 0, 0, 1); // The color of the background the camera will render.
+        public backgroundColor: Color = new Color(0, 0, 0.3, 1); // The color of the background the camera will render.
         public backgroundEnabled: boolean = true; // Determines whether or not the background of this camera will be rendered.
         // TODO: examine, if background should be an attribute of Camera or Viewport
         public fieldOfView: number = null; // The camera's sensorangle.
@@ -33,36 +33,11 @@ namespace FudgeCore {
             this.pivot = Matrix4x4.IDENTITY;
         }
 
-        public setProjection(cam: Camera): void {
-            
+        public setProjection(cam: Camera): void {            
             this.projection = cam.projection;
-            this.transform = cam.transform;
             
         }
-        /*
-                public setProjectionMatrix(projection: PROJECTION): Matrix4x4 {
-                    
-                    switch (projection) {
-                        case PROJECTION.CENTRAL:
-                            this.camera = new CameraPerspective();
-                            break;
-                        case PROJECTION.ORTHOGRAPHIC:
-                            this.camera = new CameraOrthographic();
-                            break;
-                        case PROJECTION.CABINETT:
-                            this.camera = new CameraCabinett();
-                            break;
-                        case PROJECTION.CAVALIER:
-                            this.camera = new CameraCavalier();
-                            break;
-                        default:
-                            console.log("No camera projection selected");
-                            break;
-                    }
-                    
-                    return this.transform;
-                }
-        */
+      
         public getProjection(): PROJECTION {
             return this.projection;
         }
@@ -103,13 +78,50 @@ namespace FudgeCore {
            /**
          * Returns the multiplikation of the worldtransformation of the camera container with the projection matrix
          * @returns the world-projection-matrix
+         * 
          */
         public get ViewProjectionMatrix(): Matrix4x4 {
-            let world: Matrix4x4 = this.pivot;
-           
-            let viewMatrix: Matrix4x4 = Matrix4x4.INVERSION(world);
-            return Matrix4x4.MULTIPLICATION(this.transform, viewMatrix);
+            
+            return this.transform;
         }
+
+        
+        //#region Transfer
+        public serialize(): Serialization {
+            let serialization: Serialization = {
+                backgroundColor: this.backgroundColor,
+                backgroundEnabled: this.backgroundEnabled,
+                projection: this.projection,
+                fieldOfView: this.fieldOfView,
+                direction: this.direction,
+                aspect: this.aspectRatio,
+                pivot: this.pivot.serialize()
+              //  [super.constructor.name]: super.serialize()
+            };
+            return serialization;
+        }
+
+        public deserialize(_serialization: Serialization): Serializable {
+            this.backgroundColor = _serialization.backgroundColor;
+            this.backgroundEnabled = _serialization.backgroundEnabled;
+            this.projection = _serialization.projection;
+            this.fieldOfView = _serialization.fieldOfView;
+            this.aspectRatio = _serialization.aspect;
+            this.direction = _serialization.direction;
+            this.pivot.deserialize(_serialization.pivot);
+           // super.deserialize(_serialization[super.constructor.name]);
+            switch (this.projection) {
+                case PROJECTION.ORTHOGRAPHIC:
+                    // this.projectOrthographic(); // TODO: serialize and deserialize parameters
+                    break;
+                case PROJECTION.CENTRAL:
+                  //  this.camera = new CameraPerspective();
+                    break;
+            }
+            return this;
+        }
+
+
     }
 
     

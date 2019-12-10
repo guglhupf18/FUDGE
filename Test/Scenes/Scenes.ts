@@ -116,7 +116,7 @@ namespace Scenes {
 
     export function createCamera(_translation: ƒ.Vector3 = new ƒ.Vector3(1, 1, 10), _lookAt: ƒ.Vector3 = new ƒ.Vector3()): ƒ.ComponentCamera {
         let cmpCamera: ƒ.ComponentCamera = new ƒ.ComponentCamera();
-        cmpCamera.projectCentral(1, 45, ƒ.FIELD_OF_VIEW.DIAGONAL);
+        cmpCamera.setType(ƒ.CameraPerspective);
         cmpCamera.pivot.translate(_translation);
         cmpCamera.pivot.lookAt(_lookAt);
         return cmpCamera;
@@ -153,7 +153,7 @@ namespace Scenes {
         _viewport.addEventListener(ƒ.EVENT_KEYBOARD.DOWN, rotate);
 
         function rotate(_event: ƒ.KeyboardEventƒ): void {
-            let mtxCamera: ƒ.Matrix4x4 = _viewport.camera.pivot;
+            let mtxCamera: ƒ.Matrix4x4 = _viewport.cmpCamera.pivot;
             let vctCamera: ƒ.Vector3 = ƒ.Vector3.ZERO();
             vctCamera.y = (0.1 *
                 (_event.code == ƒ.KEYBOARD_CODE.ARROW_UP || _event.code == ƒ.KEYBOARD_CODE.W ? 1 :

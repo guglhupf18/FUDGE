@@ -49,7 +49,7 @@ namespace FudgeCore {
     public set translation(_translation: Vector3) {
       this.data.set(_translation.get(), 12);
       // no full cache reset required
-      this.vectors.translation = _translation.copy;
+      this.vectors.translation = _translation;
       this.mutator = null;
     }
 
@@ -361,6 +361,17 @@ namespace FudgeCore {
     //#endregion
 
     //#region PROJECTIONS
+    /** Main method to call the according projection 
+     * @param 
+    */
+    public static PROJECTION(projection: PROJECTION): void {
+        switch (projection) { 
+            default: 
+            console.log("todo");
+        }
+     
+    }
+
     /**
      * Computes and returns a matrix that applies perspective to an object, if its transform is multiplied by it.
      * @param _aspect The aspect ratio between width and height of projectionspace.(Default = canvas.clientWidth / canvas.ClientHeight)
@@ -369,7 +380,7 @@ namespace FudgeCore {
      * @param _far The far clipspace border on the z-axis.
      * @param _direction The plane on which the fieldOfView-Angle is given 
      */
-    public static PROJECTION_CENTRAL(_aspect: number, _fieldOfViewInDegrees: number, _near: number, _far: number, _direction: FIELD_OF_VIEW): Matrix4x4 {
+   public static PROJECTION_CENTRAL(_aspect: number, _fieldOfViewInDegrees: number, _near: number, _far: number, _direction: FIELD_OF_VIEW): Matrix4x4 {
       let fieldOfViewInRadians: number = _fieldOfViewInDegrees * Math.PI / 180;
       let f: number = Math.tan(0.5 * (Math.PI - fieldOfViewInRadians));
       let rangeInv: number = 1.0 / (_near - _far);
@@ -404,9 +415,10 @@ namespace FudgeCore {
      * @param _near The positionvalue of the projectionspace's near border.
      * @param _far The positionvalue of the projectionspace's far border
      */
-    public static PROJECTION_ORTHOGRAPHIC(_left: number, _right: number, _bottom: number, _top: number, _near: number = -400, _far: number = 400): Matrix4x4 {
+    public static PROJECTION_ORTHOGRAPHIC(_left: number, _right: number, _bottom: number, _top: number, _near: number, _far: number): Matrix4x4 {
       // const matrix: Matrix4x4 = new Matrix4x4;
-      const matrix: Matrix4x4 = Recycler.get(Matrix4x4);
+      const matrix: Matrix4x4 = Recycler.get(Matrix4x4); 
+ 
       matrix.data.set([
         2 / (_right - _left), 0, 0, 0,
         0, 2 / (_top - _bottom), 0, 0,
@@ -415,6 +427,57 @@ namespace FudgeCore {
         (_bottom + _top) / (_bottom - _top),
         (_near + _far) / (_near - _far),
         1
+      ]);
+    //  console.log(matrix);
+      //return matrix;
+     
+    
+      
+      matrix.data.set([
+        2 / (_right - _left), 0, 0, 0,
+        0, 2 / (_top - _bottom), 0, 0,
+        0, 0, -2  / (_far - _near), 0,
+        0, 0, 0, 1
+
+      ]);
+     // console.log(matrix);
+      return matrix;
+      
+    
+    }
+
+    /**
+     * 
+     * @param _alpha (default = 45)
+     */
+    public static PROJECTION_CAVALIER(_alpha: number): Matrix4x4 {
+      const matrix: Matrix4x4 = Recycler.get(Matrix4x4);
+     // let angle: number = (Math.PI / 180) * _alpha;
+      let beta: number = 45;
+
+      matrix.data.set([
+        1, 0, -Math.cos(_alpha) / Math.tan(beta), 0,
+        0, 1, Math.sin(_alpha) / Math.tan(beta), 0,
+        0, 0, 0, 0,
+        0, 0, 0, 1
+
+      ]);
+      return matrix;
+    }
+    /**
+     * 
+     * @param _alpha (default = 45)
+     */
+    public static PROJECTION_CABINETT(_alpha: number): Matrix4x4 {
+      const matrix: Matrix4x4 = Recycler.get(Matrix4x4);
+     // let angle: number = (Math.PI / 180) * _alpha;
+
+      matrix.data.set([
+        1, 0, (-Math.cos(_alpha)) / 2, 0,
+        0, 1, Math.sin(_alpha) / 2, 0,
+        0, 0, 0, 0,
+        0, 0, 0, 1
+
       ]);
       return matrix;
     }
@@ -425,37 +488,37 @@ namespace FudgeCore {
      * Rotate this matrix by given vector in the order Z, Y, X. Right hand rotation is used, thumb points in axis direction, fingers curling indicate rotation
      * @param _by 
      */
-    public rotate(_by: Vector3, _fromLeft: boolean = false): void {
-      this.rotateZ(_by.z, _fromLeft);
-      this.rotateY(_by.y, _fromLeft);
-      this.rotateX(_by.x, _fromLeft);
+    public rotate(_by: Vector3): void {
+      this.rotateZ(_by.z);
+      this.rotateY(_by.y);
+      this.rotateX(_by.x);
     }
 
     /**
      * Adds a rotation around the x-Axis to this matrix
      */
-    public rotateX(_angleInDegrees: number, _fromLeft: boolean = false): void {
-      let rotation: Matrix4x4 = Matrix4x4.ROTATION_X(_angleInDegrees);
-      this.multiply(rotation, _fromLeft);
-      Recycler.store(rotation);
+    public rotateX(_angleInDegrees: number): void {
+      const matrix: Matrix4x4 = Matrix4x4.MULTIPLICATION(this, Matrix4x4.ROTATION_X(_angleInDegrees));
+      this.set(matrix);
+      Recycler.store(matrix);
     }
 
     /**
      * Adds a rotation around the y-Axis to this matrix
      */
-    public rotateY(_angleInDegrees: number, _fromLeft: boolean = false): void {
-      let rotation: Matrix4x4 = Matrix4x4.ROTATION_Y(_angleInDegrees);
-      this.multiply(rotation, _fromLeft);
-      Recycler.store(rotation);
+    public rotateY(_angleInDegrees: number): void {
+      const matrix: Matrix4x4 = Matrix4x4.MULTIPLICATION(this, Matrix4x4.ROTATION_Y(_angleInDegrees));
+      this.set(matrix);
+      Recycler.store(matrix);
     }
 
     /**
      * Adds a rotation around the z-Axis to this matrix
      */
-    public rotateZ(_angleInDegrees: number, _fromLeft: boolean = false): void {
-      let rotation: Matrix4x4 = Matrix4x4.ROTATION_Z(_angleInDegrees);
-      this.multiply(rotation, _fromLeft);
-      Recycler.store(rotation);
+    public rotateZ(_angleInDegrees: number): void {
+      const matrix: Matrix4x4 = Matrix4x4.MULTIPLICATION(this, Matrix4x4.ROTATION_Z(_angleInDegrees));
+      this.set(matrix);
+      Recycler.store(matrix);
     }
 
     /**
@@ -535,10 +598,9 @@ namespace FudgeCore {
     /**
      * Multiply this matrix with the given matrix
      */
-    public multiply(_matrix: Matrix4x4, _fromLeft: boolean = false): void {
-      const matrix: Matrix4x4 = _fromLeft ? Matrix4x4.MULTIPLICATION(_matrix, this) : Matrix4x4.MULTIPLICATION(this, _matrix);
-      this.set(matrix);
-      Recycler.store(matrix);
+    public multiply(_matrix: Matrix4x4): void {
+      this.set(Matrix4x4.MULTIPLICATION(this, _matrix));
+      this.mutator = null;
     }
     //#endregion
 

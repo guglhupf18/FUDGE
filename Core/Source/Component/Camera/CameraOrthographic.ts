@@ -3,7 +3,7 @@
 
 
 namespace FudgeCore {
-    // Class to set camera to perspective mode
+    // Class to set camera to orthographic projection
     /**
      **
      * Set the camera to orthographic projection. The origin is in the top left corner of the canvas.
@@ -14,26 +14,33 @@ namespace FudgeCore {
      */
     export class CameraOrthographic extends Camera {
 
-        public left: number = 0;
-        private right: number = 400;
-        private bottom: number = 400;
-        private top: number = 0;
-        private near: number = 400;
-        private far: number = -400;
+        private left: number = -10;
+        private right: number = 10;
+        private bottom: number = -10;
+        private top: number =  10;
+        private near: number = -100;
+        private far: number = 100;
 
         constructor() {
             super();
-            this.left = 0;
-            this.right  = 600; 
-            this.bottom = 400;
-            this.top = 0;
-            this.projection = PROJECTION.ORTHOGRAPHIC;
-         
+            
+            this.projection = PROJECTION.ORTHOGRAPHIC;         
             this.transform = Matrix4x4.PROJECTION_ORTHOGRAPHIC(this.left, this.right, this.bottom, this.top, this.near, this.far);
-
-          //  this.transform = Matrix4x4.PROJECTION_ORTHOGRAPHIC(0, 400, 400, 0, -400, 400);
-           // console.log(this.transform);
           
         }
+
+        public setProjectionBorder(leftBorder: number, topBorder: number, nearClippingPlane: number, farClippingPlane: number): void {
+            this.left = leftBorder;
+            this.top = topBorder;
+            this.right = this.left * -1;
+            this.bottom = -this.top;
+            this.near = nearClippingPlane;
+            this.far = farClippingPlane;
+            this.transform = Matrix4x4.PROJECTION_ORTHOGRAPHIC(this.left, this.right, this.bottom, this.top, this.near, this.far);
+
+        }
+
+        
+
     }
 }
