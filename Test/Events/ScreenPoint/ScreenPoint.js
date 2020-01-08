@@ -13,7 +13,7 @@ var ScreenPoint;
         let posCamera = new ƒ.Vector3(-1, 2, 3);
         canvas = document.querySelector("canvas");
         let cmpCamera = Scenes.createCamera(posCamera);
-        cmpCamera.setType(ƒ.CameraPerspective);
+        cmpCamera.setType(ƒ.CameraCentral);
         ScreenPoint.viewPort = new ƒ.Viewport();
         ScreenPoint.viewPort.initialize(canvas.id, branch, cmpCamera, canvas);
         ScreenPoint.viewPort.frameClientToCanvas.setScale(0.5, 0.5);

@@ -14,7 +14,8 @@ namespace FudgeCore {
         DIMETRIC = "dimetric",
         STEREO = "stereo",
         CAVALIER = "cavalier",
-        CABINETT = "cabinett"
+        CABINET = "cabinet",
+        ISOMETRIC = "isometric"
     }
 
     export class Camera {

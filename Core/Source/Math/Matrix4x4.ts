@@ -244,6 +244,7 @@ namespace FudgeCore {
         d * ((tmp18 * m12 + tmp23 * m32 + tmp15 * m02) - (tmp22 * m32 + tmp14 * m02 + tmp19 * m12)),  // [14]
         d * ((tmp22 * m22 + tmp16 * m02 + tmp21 * m12) - (tmp20 * m12 + tmp23 * m22 + tmp17 * m02))  // [15]
       ]);
+      console.log(matrix);
       return matrix;
     }
 
@@ -428,8 +429,7 @@ namespace FudgeCore {
         (_near + _far) / (_near - _far),
         1
       ]);
-    //  console.log(matrix);
-      //return matrix;
+     // return matrix;
      
     
       
@@ -440,7 +440,6 @@ namespace FudgeCore {
         0, 0, 0, 1
 
       ]);
-     // console.log(matrix);
       return matrix;
       
     
@@ -451,34 +450,69 @@ namespace FudgeCore {
      * @param _alpha (default = 45)
      */
     public static PROJECTION_CAVALIER(_alpha: number): Matrix4x4 {
-      const matrix: Matrix4x4 = Recycler.get(Matrix4x4);
-     // let angle: number = (Math.PI / 180) * _alpha;
-      let beta: number = 45;
-
+      const matrix: Matrix4x4 = Recycler.get(Matrix4x4); 
+      let angle: number = (Math.PI / 180) * _alpha;
+     // let beta: number = 45;
+     // let alpha = 45;
       matrix.data.set([
-        1, 0, -Math.cos(_alpha) / Math.tan(beta), 0,
-        0, 1, Math.sin(_alpha) / Math.tan(beta), 0,
+        1, 0, -Math.cos(angle), 0,
+        0, 1, Math.sin(angle), 0,
         0, 0, 0, 0,
         0, 0, 0, 1
 
       ]);
+      // TODO: Fix this.INVERSION()
+
+      matrix.data.set([
+        1, 0, 0, 0,
+        0, 1, 0, 0,
+        Math.cos(angle), Math.sin(angle), 0, 0,
+        0, 0, 0, 1
+
+      ]);
       return matrix;
+      
     }
     /**
      * 
      * @param _alpha (default = 45)
      */
-    public static PROJECTION_CABINETT(_alpha: number): Matrix4x4 {
+    public static PROJECTION_CABINET(angle: number): Matrix4x4 {
       const matrix: Matrix4x4 = Recycler.get(Matrix4x4);
-     // let angle: number = (Math.PI / 180) * _alpha;
+      let angleInRadians: number = (Math.PI / 180) * angle;
 
       matrix.data.set([
-        1, 0, (-Math.cos(_alpha)) / 2, 0,
-        0, 1, Math.sin(_alpha) / 2, 0,
+        1, 0, (Math.cos(angleInRadians)) / 2, 0,
+        0, 1, Math.sin(angleInRadians) / 2, 0,
         0, 0, 0, 0,
         0, 0, 0, 1
 
       ]);
+      // Transpose matrix
+      matrix.data.set([
+        1, 0, 0, 0,
+        0, 1, 0, 0,
+        (Math.cos(angleInRadians)) / 2, Math.sin(angleInRadians) / 2, 0, 0,
+        0, 0, 0, 1
+
+      ]);
+
+      return matrix;
+    }
+    public static PROJECTION_ISOMETRIC(): Matrix4x4 {
+      let angle: number = 45;
+      const matrix: Matrix4x4 = Recycler.get(Matrix4x4);
+
+      let angleInRadians: number = (Math.PI / 180) * angle;
+
+      matrix.data.set([
+        1, 0, 0, 0,
+        0, 1, 0, 0,
+        angleInRadians, angleInRadians, 0, 0,
+        0, 0, 0, 1
+
+      ]);
+
       return matrix;
     }
     //#endregion

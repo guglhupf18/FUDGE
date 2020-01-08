@@ -15,7 +15,7 @@ var EventPassing;
         let canvasList = document.getElementsByTagName("canvas");
         for (let i = 0; i < canvasList.length; i++) {
             let cmpCamera = Scenes.createCamera(posCameras[i]);
-            cmpCamera.setType(ƒ.CameraPerspective);
+            cmpCamera.setType(ƒ.CameraCentral);
             let viewport = new ƒ.Viewport();
             viewport.initialize(canvasList[i].id, branch, cmpCamera, canvasList[i]);
             viewPorts.push(viewport);

@@ -1405,7 +1405,8 @@ declare namespace FudgeCore {
         DIMETRIC = "dimetric",
         STEREO = "stereo",
         CAVALIER = "cavalier",
-        CABINETT = "cabinett"
+        CABINET = "cabinet",
+        ISOMETRIC = "isometric"
     }
     class Camera {
         pivot: Matrix4x4;
@@ -1436,18 +1437,6 @@ declare namespace FudgeCore {
     }
 }
 declare namespace FudgeCore {
-    class CameraCabinett extends Camera {
-        private _alpha;
-        constructor();
-    }
-}
-declare namespace FudgeCore {
-    class CameraCavalier extends Camera {
-        private alpha;
-        constructor();
-    }
-}
-declare namespace FudgeCore {
     /**
      **
      * Set the camera to orthographic projection. The origin is in the top left corner of the canvas.
@@ -1467,6 +1456,18 @@ declare namespace FudgeCore {
         setProjectionBorder(leftBorder: number, topBorder: number, nearClippingPlane: number, farClippingPlane: number): void;
     }
 }
+declare namespace FudgeCore {
+    class CameraCabinett extends CameraOrthographic {
+        private alpha;
+        constructor();
+    }
+}
+declare namespace FudgeCore {
+    class CameraCavalier extends CameraOrthographic {
+        private alpha;
+        constructor();
+    }
+}
 /**
  * @param _aspect The aspect ratio between width and height of projectionspace.(Default = canvas.clientWidth / canvas.ClientHeight)
  * @param _fieldOfView The field of view in Degrees. (Default = 45)
@@ -1475,7 +1476,7 @@ declare namespace FudgeCore {
  *
  */
 declare namespace FudgeCore {
-    class CameraPerspective extends Camera {
+    class CameraCentral extends Camera {
         fieldOfView: number;
         aspectRatio: number;
         direction: FIELD_OF_VIEW;
@@ -1485,6 +1486,11 @@ declare namespace FudgeCore {
         getAspect(): number;
         getFieldOfView(): number;
         getDirection(): FIELD_OF_VIEW;
+    }
+}
+declare namespace FudgeCore {
+    class CameraIsometric extends CameraOrthographic {
+        constructor();
     }
 }
 /**
@@ -2329,7 +2335,8 @@ declare namespace FudgeCore {
          *
          * @param _alpha (default = 45)
          */
-        static PROJECTION_CABINETT(_alpha: number): Matrix4x4;
+        static PROJECTION_CABINET(angle: number): Matrix4x4;
+        static PROJECTION_ISOMETRIC(): Matrix4x4;
         /**
          * Rotate this matrix by given vector in the order Z, Y, X. Right hand rotation is used, thumb points in axis direction, fingers curling indicate rotation
          * @param _by

@@ -16,7 +16,7 @@ namespace ScreenPoint {
         let posCamera: ƒ.Vector3 = new ƒ.Vector3(-1, 2, 3);
         canvas = document.querySelector("canvas");
         let cmpCamera: ƒ.ComponentCamera = Scenes.createCamera(posCamera);
-        cmpCamera.setType(ƒ.CameraPerspective);
+        cmpCamera.setType(ƒ.CameraCentral);
         viewPort = new ƒ.Viewport();
         viewPort.initialize(canvas.id, branch, cmpCamera, canvas);
 

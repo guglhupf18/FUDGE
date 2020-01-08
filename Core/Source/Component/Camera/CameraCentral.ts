@@ -10,7 +10,7 @@
 
 namespace FudgeCore {
 
-    export class CameraPerspective extends Camera {
+    export class CameraCentral extends Camera {
 
         public fieldOfView: number = 45; // The camera's sensorangle.
         public aspectRatio: number = 1.0;
@@ -23,6 +23,7 @@ namespace FudgeCore {
             
             this.projection = PROJECTION.CENTRAL;
             this.transform = Matrix4x4.PROJECTION_CENTRAL(this.aspectRatio, this.fieldOfView, this.near, this.far, this.direction); // TODO: remove magic numbers
+            console.log(this.transform);
         }
 
         public getAspect(): number {

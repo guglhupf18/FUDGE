@@ -18,15 +18,14 @@ namespace FudgeCore {
         private right: number = 10;
         private bottom: number = -10;
         private top: number =  10;
-        private near: number = -100;
-        private far: number = 100;
+        private near: number = -10;
+        private far: number = 10;
 
         constructor() {
             super();
             
             this.projection = PROJECTION.ORTHOGRAPHIC;         
             this.transform = Matrix4x4.PROJECTION_ORTHOGRAPHIC(this.left, this.right, this.bottom, this.top, this.near, this.far);
-          
         }
 
         public setProjectionBorder(leftBorder: number, topBorder: number, nearClippingPlane: number, farClippingPlane: number): void {

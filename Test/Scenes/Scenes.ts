@@ -116,7 +116,7 @@ namespace Scenes {
 
     export function createCamera(_translation: ƒ.Vector3 = new ƒ.Vector3(1, 1, 10), _lookAt: ƒ.Vector3 = new ƒ.Vector3()): ƒ.ComponentCamera {
         let cmpCamera: ƒ.ComponentCamera = new ƒ.ComponentCamera();
-        cmpCamera.setType(ƒ.CameraPerspective);
+        cmpCamera.setType(ƒ.CameraCentral);
         cmpCamera.pivot.translate(_translation);
         cmpCamera.pivot.lookAt(_lookAt);
         return cmpCamera;

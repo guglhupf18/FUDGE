@@ -31,7 +31,7 @@ var FudgeTest;
             // initialize viewport
             // TODO: create camera/canvas here without "Scenes"
             cmpCamera = Scenes.createCamera(new ƒ.Vector3(3, 3, 5));
-            cmpCamera.setType(ƒ.CameraPerspective);
+            cmpCamera.setType(ƒ.CameraCentral);
             canvas = Scenes.createCanvas();
             document.body.appendChild(canvas);
             this.viewport = new ƒ.Viewport();

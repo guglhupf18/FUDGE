@@ -93,7 +93,7 @@ var Scenes;
     Scenes.createViewport = createViewport;
     function createCamera(_translation = new ƒ.Vector3(1, 1, 10), _lookAt = new ƒ.Vector3()) {
         let cmpCamera = new ƒ.ComponentCamera();
-        cmpCamera.setType(ƒ.CameraPerspective);
+        cmpCamera.setType(ƒ.CameraCentral);
         cmpCamera.pivot.translate(_translation);
         cmpCamera.pivot.lookAt(_lookAt);
         return cmpCamera;

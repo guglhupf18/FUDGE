@@ -13,7 +13,7 @@ namespace RenderManagerRendering {
 
         // initialize viewport
         let cmpCamera: ƒ.ComponentCamera = Scenes.createCamera(new ƒ.Vector3(3, 3, 5));
-        cmpCamera.setType(ƒ.CameraPerspective);
+        cmpCamera.setType(ƒ.CameraCentral);
         let canvas: HTMLCanvasElement = Scenes.createCanvas();
         document.body.appendChild(canvas);
         let viewPort: ƒ.Viewport = new ƒ.Viewport();

@@ -55,7 +55,7 @@ namespace FudgeCore {
 
             switch (this.camera.projection) {
                 case PROJECTION.CENTRAL:
-                    this.camera = new CameraPerspective();
+                    this.camera = new CameraCentral();
                     break;
             }
         }

@@ -187,19 +187,19 @@ namespace FudgeCore {
             switch (this.cmpCamera.camera.projection) {
                 case PROJECTION.CENTRAL:
                     console.log("Perspective");
-                    this.cmpCamera.setType(CameraPerspective);
+                    this.cmpCamera.setType(CameraCentral);
                     break;
                 case PROJECTION.ORTHOGRAPHIC:
                     console.log("Orthographic");
                     this.cmpCamera.setType(CameraOrthographic);
                     break;
-                case PROJECTION.CABINETT:
+                case PROJECTION.CABINET:
                     console.log("Cabinett");
                     this.cmpCamera.setType(CameraCabinett);
                     break;
                 case PROJECTION.CAVALIER:
                     console.log("Cavalier");
-                    this.cmpCamera.setType(CameraCavalier);
+                   // this.cmpCamera.setType(CameraCavalier);
                     break;
                 default:
                     console.log("No camera projection selected");
