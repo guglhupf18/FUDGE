@@ -33,7 +33,7 @@ namespace FudgeCore {
                     
                     void main() {   
                         gl_Position = u_projection * vec4(a_position, 1.0);
-                        vec3 normal = mat3(u_world) * a_normal;
+                        vec3 normal = normalize(mat3(u_world) * a_normal);
 
                         v_color = u_ambient.color;
                         for (uint i = 0u; i < u_nLightsDirectional; i++) {
@@ -41,8 +41,7 @@ namespace FudgeCore {
                             if (illumination > 0.0f)
                                 v_color += illumination * u_directional[i].color; // vec4(1,1,1,1); // 
                         }
-                        //u_ambient;
-                        //u_directional[0];
+                        v_color.a = 1.0;
                     }`;
         }
         public static getFragmentShaderSource(): string {

@@ -9,8 +9,8 @@ namespace Minimal {
 
         let viewport: ƒ.Viewport = new ƒ.Viewport();
 
-        let mesh: ƒ.MeshCube = new ƒ.MeshCube();
-        let mtrSolidWhite: ƒ.Material = new ƒ.Material("SolidWhite", ƒ.ShaderUniColor, new ƒ.CoatColored(ƒ.Color.WHITE));
+        let mesh: ƒ.MeshQuad = new ƒ.MeshQuad();
+        let mtrSolidWhite: ƒ.Material = new ƒ.Material("SolidWhite", ƒ.ShaderUniColor, new ƒ.CoatColored(ƒ.Color.CSS("WHITE")));
 
         let cmpMesh: ƒ.ComponentMesh = new ƒ.ComponentMesh(mesh);
         let cmpMaterial: ƒ.ComponentMaterial = new ƒ.ComponentMaterial(mtrSolidWhite);
@@ -19,7 +19,7 @@ namespace Minimal {
         node.addComponent(cmpMaterial);
 
         let mesh2: ƒ.MeshCube = new ƒ.MeshCube();
-        let mtrSolidWhite2: ƒ.Material = new ƒ.Material("SolidBlue", ƒ.ShaderUniColor, new ƒ.CoatColored(ƒ.Color.BLUE));
+        let mtrSolidWhite2: ƒ.Material = new ƒ.Material("SolidBlue", ƒ.ShaderUniColor, new ƒ.CoatColored(new ƒ.Color(0, 0, 1)));
 
         let cmpMesh2: ƒ.ComponentMesh = new ƒ.ComponentMesh(mesh2);
         let cmpMaterial2: ƒ.ComponentMaterial = new ƒ.ComponentMaterial(mtrSolidWhite2);
@@ -34,7 +34,7 @@ namespace Minimal {
 
 
         let plane: ƒ.MeshCube = new ƒ.MeshCube();
-        let mtrCyan: ƒ.Material = new ƒ.Material("White", ƒ.ShaderUniColor, new ƒ.CoatColored(ƒ.Color.CYAN));
+        let mtrCyan: ƒ.Material = new ƒ.Material("White", ƒ.ShaderUniColor, new ƒ.CoatColored(new ƒ.Color(0, 0.8, 1)));
 
         let cmpMesh3: ƒ.ComponentMesh = new ƒ.ComponentMesh(plane);
         let cmpMaterial3: ƒ.ComponentMaterial = new ƒ.ComponentMaterial(mtrCyan);

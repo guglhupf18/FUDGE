@@ -24,7 +24,7 @@ namespace FudgeCore {
   export class Matrix4x4 extends Mutable implements Serializable {
     private data: Float32Array = new Float32Array(16); // The data of the matrix.
     private mutator: Mutator = null; // prepared for optimization, keep mutator to reduce redundant calculation and for comparison. Set to null when data changes!
-    private vectors: VectorRepresentation; // vector representation of 
+    private vectors: VectorRepresentation; // vector representation of this matrix
 
     public constructor() {
       super();
@@ -590,6 +590,7 @@ namespace FudgeCore {
     public translateX(_x: number): void {
       this.data[12] += _x;
       this.mutator = null;
+      this.vectors.translation = null;
     }
     /**
      * Add a translation along the y-Axis by the given amount to this matrix 
@@ -597,6 +598,7 @@ namespace FudgeCore {
     public translateY(_y: number): void {
       this.data[13] += _y;
       this.mutator = null;
+      this.vectors.translation = null;
     }
     /**
      * Add a translation along the y-Axis by the given amount to this matrix 
@@ -604,6 +606,7 @@ namespace FudgeCore {
     public translateZ(_z: number): void {
       this.data[14] += _z;
       this.mutator = null;
+      this.vectors.translation = null;
     }
     //#endregion
 
@@ -700,6 +703,10 @@ namespace FudgeCore {
       // this.data = _to.get();
       this.data.set(_to.data);
       this.resetCache();
+    }
+
+    public toString(): string {
+      return `ƒ.Matrix4x4(translation: ${this.translation.toString()}, rotation: ${this.rotation.toString()}, scaling: ${this.scaling.toString()}`;
     }
 
     /**

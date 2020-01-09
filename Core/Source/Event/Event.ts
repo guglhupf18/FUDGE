@@ -41,74 +41,14 @@ namespace FudgeCore {
         FILE_SAVED = "fileSaved"
     }
 
-    export const enum EVENT_POINTER {
-        UP = "ƒpointerup",
-        DOWN = "ƒpointerdown",
-        MOVE = "ƒpointermove",
-        OVER = "ƒpointerover",
-        ENTER = "ƒpointerenter",
-        CANCEL = "ƒpointercancel",
-        OUT = "ƒpointerout",
-        LEAVE = "ƒpointerleave",
-        GOTCAPTURE = "ƒgotpointercapture",
-        LOSTCAPTURE = "ƒlostpointercapture"
-    }
-    export const enum EVENT_DRAGDROP {
-        DRAG = "ƒdrag",
-        DROP = "ƒdrop",
-        START = "ƒdragstart",
-        END = "ƒdragend",
-        OVER = "ƒdragover"
-    }
-    export const enum EVENT_WHEEL {
-        WHEEL = "ƒwheel"
-    }
 
-    export class PointerEventƒ extends PointerEvent {
-        public pointerX: number;
-        public pointerY: number;
-        public canvasX: number;
-        public canvasY: number;
-        public clientRect: ClientRect;
-
-        constructor(type: string, _event: PointerEventƒ) {
-            super(type, _event);
-            let target: HTMLElement = <HTMLElement>_event.target;
-            this.clientRect = target.getClientRects()[0];
-            this.pointerX = _event.clientX - this.clientRect.left;
-            this.pointerY = _event.clientY - this.clientRect.top;
-        }
-    }
-
-    export class DragDropEventƒ extends DragEvent {
-        public pointerX: number;
-        public pointerY: number;
-        public canvasX: number;
-        public canvasY: number;
-        public clientRect: ClientRect;
-
-        constructor(type: string, _event: DragDropEventƒ) {
-            super(type, _event);
-            let target: HTMLElement = <HTMLElement>_event.target;
-            this.clientRect = target.getClientRects()[0];
-            this.pointerX = _event.clientX - this.clientRect.left;
-            this.pointerY = _event.clientY - this.clientRect.top;
-        }
-    }
-
-    export class WheelEventƒ extends WheelEvent {
-        constructor(type: string, _event: WheelEventƒ) {
-            super(type, _event);
-        }
-    }
-
-    export type Eventƒ = PointerEventƒ | DragDropEventƒ | WheelEventƒ | KeyboardEventƒ | Event;
+    export type Eventƒ = EventPointer | EventDragDrop | EventWheel | EventKeyboard | Event;
 
     export type EventListenerƒ =
-        ((_event: PointerEventƒ) => void) |
-        ((_event: DragDropEventƒ) => void) |
-        ((_event: WheelEventƒ) => void) |
-        ((_event: KeyboardEventƒ) => void) |
+        ((_event: EventPointer) => void) |
+        ((_event: EventDragDrop) => void) |
+        ((_event: EventWheel) => void) |
+        ((_event: EventKeyboard) => void) |
         ((_event: Eventƒ) => void) |
         EventListenerObject;
 
