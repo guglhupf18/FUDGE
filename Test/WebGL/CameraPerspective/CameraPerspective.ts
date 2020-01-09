@@ -55,7 +55,7 @@ namespace CameraPerspective {
         let zAxisNode: ƒ.Node = new ƒ.Node("zAxisNode");
         let gridSize: number = 3;
 
-        let mtrWhite: ƒ.Material = new ƒ.Material("White", ƒ.ShaderUniColor, new ƒ.CoatColored(ƒ.Color.WHITE));
+        let mtrWhite: ƒ.Material = new ƒ.Material("White", ƒ.ShaderUniColor, new ƒ.CoatColored(new ƒ.Color(0.1, 0.1, 0.1)));
         let cmpMaterialWhite: ƒ.ComponentMaterial = new ƒ.ComponentMaterial(mtrWhite);
 
         // tslint:disable-next-line: typedef
@@ -97,17 +97,17 @@ namespace CameraPerspective {
         return grid;
     }
 
-    function setPerspective(_event: ƒ.KeyboardEventƒ): void {
+    function setPerspective(_event: ƒ.EventKeyboard): void {
         console.log(_event);
         switch (_event.code) {
-            case ƒ.KEYBOARD_CODE.SPACE:
+            case ƒ.KEYBOARD_CODE.A:
                 console.log("Pressed SPACE");
                 break;
             default:
                 console.log("Invalid Input");
         }
     }
-    function test(event: ƒ.KeyboardEventƒ): void {
+    function test(event: ƒ.KEYBOARD_CODE): void {
         console.log("test"); 
     }
 }

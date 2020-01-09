@@ -1809,7 +1809,7 @@ declare namespace FudgeCore {
      * [[RenderManager]].viewport -> [[Viewport]].source -> [[Viewport]].destination -> DOM-Canvas -> Client(CSS)
      * @authors Jascha Karagöl, HFU, 2019 | Jirka Dell'Oro-Friedl, HFU, 2019
      */
-    class Viewport extends EventTarget {
+    class Viewport extends EventTargetƒ {
         private static focus;
         name: string;
         cmpCamera: ComponentCamera;
@@ -3232,6 +3232,10 @@ declare namespace FudgeCore {
          * Viewports collect the lights relevant to the branch to render and calls setLights to pass the collection.
          * RenderManager passes it on to all shaders used that can process light
          * @param _lights
+         */
+        static setLights(_lights: MapLightTypeToLightList): void;
+        /**
+         * Update all render data. After RenderManager, multiple viewports can render their associated data without updating the same data multiple times
          */
         static update(): void;
         /**

@@ -14,7 +14,7 @@ namespace FudgeCore {
     private static focus: Viewport;
 
     public name: string = "Viewport"; // The name to call this viewport by.
-    public camera: ComponentCamera = null; // The camera representing the view parameters to render the branch.
+    public cmpCamera: ComponentCamera = null; // The camera representing the view parameters to render the branch.
 
     public rectSource: Rectangle;
     public rectDestination: Rectangle;
@@ -46,7 +46,7 @@ namespace FudgeCore {
      */
     public initialize(_name: string, _branch: Node, _camera: ComponentCamera, _canvas: HTMLCanvasElement): void {
       this.name = _name;
-      this.camera = _camera;
+      this.cmpCamera = _camera;
       this.canvas = _canvas;
       this.crc2 = _canvas.getContext("2d");
 
@@ -106,19 +106,19 @@ namespace FudgeCore {
      */
     public draw(): void {
       RenderManager.resetFrameBuffer();
-      if (!this.camera.isActive)
+      if (!this.cmpCamera.isActive)
         return;
       if (this.adjustingFrames)
         this.adjustFrames();
       if (this.adjustingCamera)
         this.adjustCamera();
 
-      RenderManager.clear(this.camera.backgroundColor);
+      RenderManager.clear(this.cmpCamera.camera.backgroundColor);
       if (RenderManager.addBranch(this.branch))
         // branch has not yet been processed fully by rendermanager -> update all registered nodes
         RenderManager.update();
       RenderManager.setLights(this.lights);
-      RenderManager.drawBranch(this.branch, this.camera);
+      RenderManager.drawBranch(this.branch, this.cmpCamera);
 
       this.crc2.imageSmoothingEnabled = false;
       this.crc2.drawImage(
@@ -141,7 +141,7 @@ namespace FudgeCore {
         // branch has not yet been processed fully by rendermanager -> update all registered nodes
         RenderManager.update();
 
-      this.pickBuffers = RenderManager.drawBranchForRayCast(this.branch, this.camera);
+      this.pickBuffers = RenderManager.drawBranchForRayCast(this.branch, this.cmpCamera);
 
       this.crc2.imageSmoothingEnabled = false;
       this.crc2.drawImage(
@@ -185,8 +185,28 @@ namespace FudgeCore {
      * Adjust the camera parameters to fit the rendering into the render vieport
      */
     public adjustCamera(): void {
-      let rect: Rectangle = RenderManager.getViewportRectangle();
-      this.camera.projectCentral(rect.width / rect.height, this.camera.getFieldOfView());
+     // let rect: Rectangle = RenderManager.getViewportRectangle();
+      switch (this.cmpCamera.camera.projection) {
+        case PROJECTION.CENTRAL:
+            console.log("Perspective");
+            this.cmpCamera.setType(CameraCentral);
+            break;
+        case PROJECTION.ORTHOGRAPHIC:
+            console.log("Orthographic");
+            this.cmpCamera.setType(CameraOrthographic);
+            break;
+        case PROJECTION.CABINET:
+            console.log("Cabinett");
+            this.cmpCamera.setType(CameraCabinett);
+            break;
+        case PROJECTION.CAVALIER:
+            console.log("Cavalier");
+           // this.cmpCamera.setType(CameraCavalier);
+            break;
+        default:
+            console.log("No camera projection selected");
+            break;
+    }
     }
     // #endregion
 
@@ -205,7 +225,7 @@ namespace FudgeCore {
      * Returns a point on the render-rectangle matching the given point on the source rectangle
      */
     public pointSourceToRender(_source: Vector2): Vector2 {
-      let projectionRectangle: Rectangle = this.camera.getProjectionRectangle();
+      let projectionRectangle: Rectangle = this.cmpCamera.camera.getProjectionRectangle();
       let point: Vector2 = this.frameSourceToRender.getPoint(_source, projectionRectangle);
       return point;
     }
@@ -228,7 +248,7 @@ namespace FudgeCore {
     public pointClientToProjection(_client: Vector2): Vector2 {
       let posRender: Vector2 = this.pointClientToRender(_client);
       let rectRender: Rectangle = this.frameSourceToRender.getRect(this.rectSource);
-      let rectProjection: Rectangle = this.camera.getProjectionRectangle();
+      let rectProjection: Rectangle = this.cmpCamera.camera.getProjectionRectangle();
 
       let posProjection: Vector2 = new Vector2(
         rectProjection.width * posRender.x / rectRender.width,
