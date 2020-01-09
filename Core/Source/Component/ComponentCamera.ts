@@ -1,18 +1,6 @@
 /// <reference path="Component.ts"/>
 namespace FudgeCore {
-  export enum FIELD_OF_VIEW {
-    HORIZONTAL, VERTICAL, DIAGONAL
-  }
-  /**
-   * Defines identifiers for the various projections a camera can provide.  
-   * TODO: change back to number enum if strings not needed
-   */
-  export enum PROJECTION {
-    CENTRAL = "central",
-    ORTHOGRAPHIC = "orthographic",
-    DIMETRIC = "dimetric",
-    STEREO = "stereo"
-  }
+  
   /**
    * The camera component holds the projection-matrix and other data needed to render a scene from the perspective of the node it is attached to.
    * @authors Jascha Karagöl, HFU, 2019 | Jirka Dell'Oro-Friedl, HFU, 2019

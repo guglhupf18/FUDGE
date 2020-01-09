@@ -1,5 +1,4 @@
 /// <reference path="../Light/Light.ts"/>
-/// <reference path="../Event/Event.ts"/>
 /// <reference path="../Component/ComponentLight.ts"/>
 /// <reference path="../Math/Rectangle.ts"/>
 namespace FudgeCore {

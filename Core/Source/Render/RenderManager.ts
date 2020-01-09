@@ -185,7 +185,7 @@ namespace FudgeCore {
       // let renderLights: RenderLights = RenderManager.createRenderLights(_lights);
       for (let entry of RenderManager.renderShaders) {
         let renderShader: RenderShader = entry[1].getReference();
-        RenderManager.setLightsInShader(renderShader, _lights);
+       // RenderManager.setLights(renderShader, _lights);
       }
       // debugger;
     }

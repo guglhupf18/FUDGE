@@ -1795,61 +1795,66 @@ var FudgeCore;
          * Convert light data to flat arrays
          * TODO: this method appears to be obsolete...?
          */
-        static createRenderLights(_lights) {
-            let renderLights = {};
+        /*
+        protected static createRenderLights(_lights: MapLightTypeToLightList): RenderLights {
+            let renderLights: RenderLights = {};
             for (let entry of _lights) {
                 // TODO: simplyfy, since direction is now handled by ComponentLight
                 switch (entry[0]) {
-                    case FudgeCore.LightAmbient:
-                        let ambient = [];
+                    case LightAmbient:
+                        let ambient: number[] = [];
                         for (let cmpLight of entry[1]) {
-                            let c = cmpLight.light.color;
+                            let c: Color = cmpLight.light.color;
                             ambient.push(c.r, c.g, c.b, c.a);
                         }
                         renderLights["u_ambient"] = new Float32Array(ambient);
                         break;
-                    case FudgeCore.LightDirectional:
-                        let directional = [];
+                    case LightDirectional:
+                        let directional: number[] = [];
                         for (let cmpLight of entry[1]) {
-                            let c = cmpLight.light.color;
+                            let c: Color = cmpLight.light.color;
                             // let d: Vector3 = (<LightDirectional>light.getLight()).direction;
                             directional.push(c.r, c.g, c.b, c.a, 0, 0, 1);
                         }
                         renderLights["u_directional"] = new Float32Array(directional);
                         break;
                     default:
-                        FudgeCore.Debug.warn("Shaderstructure undefined for", entry[0]);
+                        Debug.warn("Shaderstructure undefined for", entry[0]);
                 }
             }
             return renderLights;
         }
+
         /**
          * Set light data in shaders
          */
-        static setLightsInShader(_renderShader, _lights) {
+        /*
+        protected static setLightsInShader(_renderShader: RenderShader, _lights: MapLightTypeToLightList): void {
             RenderOperator.useProgram(_renderShader);
-            let uni = _renderShader.uniforms;
-            let ambient = uni["u_ambient.color"];
+            let uni: { [name: string]: WebGLUniformLocation } = _renderShader.uniforms;
+
+            let ambient: WebGLUniformLocation = uni["u_ambient.color"];
             if (ambient) {
-                let cmpLights = _lights.get(FudgeCore.LightAmbient);
+                let cmpLights: ComponentLight[] = _lights.get(LightAmbient);
                 if (cmpLights) {
                     // TODO: add up ambient lights to a single color
-                    let result = new FudgeCore.Color(0, 0, 0, 1);
+                    let result: Color = new Color(0, 0, 0, 1);
                     for (let cmpLight of cmpLights)
                         result.add(cmpLight.light.color);
                     RenderOperator.crc3.uniform4fv(ambient, result.getArray());
                 }
             }
-            let nDirectional = uni["u_nLightsDirectional"];
+
+            let nDirectional: WebGLUniformLocation = uni["u_nLightsDirectional"];
             if (nDirectional) {
-                let cmpLights = _lights.get(FudgeCore.LightDirectional);
+                let cmpLights: ComponentLight[] = _lights.get(LightDirectional);
                 if (cmpLights) {
-                    let n = cmpLights.length;
+                    let n: number = cmpLights.length;
                     RenderOperator.crc3.uniform1ui(nDirectional, n);
-                    for (let i = 0; i < n; i++) {
-                        let cmpLight = cmpLights[i];
+                    for (let i: number = 0; i < n; i++) {
+                        let cmpLight: ComponentLight = cmpLights[i];
                         RenderOperator.crc3.uniform4fv(uni[`u_directional[${i}].color`], cmpLight.light.color.getArray());
-                        let direction = FudgeCore.Vector3.Z();
+                        let direction: Vector3 = Vector3.Z();
                         direction.transform(cmpLight.pivot);
                         direction.transform(cmpLight.getContainer().mtxWorld);
                         RenderOperator.crc3.uniform3fv(uni[`u_directional[${i}].direction`], direction.get());
@@ -1858,6 +1863,7 @@ var FudgeCore;
             }
             // debugger;
         }
+**/
         /**
          * Draw a mesh buffer using the given infos and the complete projection matrix
          * @param _renderShader
@@ -2743,23 +2749,6 @@ var FudgeCore;
 var FudgeCore;
 /// <reference path="Component.ts"/>
 (function (FudgeCore) {
-    let FIELD_OF_VIEW;
-    (function (FIELD_OF_VIEW) {
-        FIELD_OF_VIEW[FIELD_OF_VIEW["HORIZONTAL"] = 0] = "HORIZONTAL";
-        FIELD_OF_VIEW[FIELD_OF_VIEW["VERTICAL"] = 1] = "VERTICAL";
-        FIELD_OF_VIEW[FIELD_OF_VIEW["DIAGONAL"] = 2] = "DIAGONAL";
-    })(FIELD_OF_VIEW = FudgeCore.FIELD_OF_VIEW || (FudgeCore.FIELD_OF_VIEW = {}));
-    /**
-     * Defines identifiers for the various projections a camera can provide.
-     * TODO: change back to number enum if strings not needed
-     */
-    let PROJECTION;
-    (function (PROJECTION) {
-        PROJECTION["CENTRAL"] = "central";
-        PROJECTION["ORTHOGRAPHIC"] = "orthographic";
-        PROJECTION["DIMETRIC"] = "dimetric";
-        PROJECTION["STEREO"] = "stereo";
-    })(PROJECTION = FudgeCore.PROJECTION || (FudgeCore.PROJECTION = {}));
     /**
      * The camera component holds the projection-matrix and other data needed to render a scene from the perspective of the node it is attached to.
      * @authors Jascha Karagöl, HFU, 2019 | Jirka Dell'Oro-Friedl, HFU, 2019
@@ -2768,14 +2757,6 @@ var FudgeCore;
         constructor() {
             super(...arguments);
             this.pivot = FudgeCore.Matrix4x4.IDENTITY;
-            this.backgroundColor = new FudgeCore.Color(0, 0, 0, 1); // The color of the background the camera will render.
-            //private orthographic: boolean = false; // Determines whether the image will be rendered with perspective or orthographic projection.
-            this.projection = PROJECTION.CENTRAL;
-            this.transform = new FudgeCore.Matrix4x4; // The matrix to multiply each scene objects transformation by, to determine where it will be drawn.
-            this.fieldOfView = 45; // The camera's sensorangle.
-            this.aspectRatio = 1.0;
-            this.direction = FIELD_OF_VIEW.DIAGONAL;
-            this.backgroundEnabled = true; // Determines whether or not the background of this camera will be rendered.
             //#endregion
         }
         // TODO: examine, if background should be an attribute of Camera or Viewport
@@ -2868,32 +2849,20 @@ var FudgeCore;
         //#region Transfer
         serialize() {
             let serialization = {
-                backgroundColor: this.backgroundColor,
-                backgroundEnabled: this.backgroundEnabled,
-                projection: this.projection,
-                fieldOfView: this.fieldOfView,
-                direction: this.direction,
-                aspect: this.aspectRatio,
                 pivot: this.pivot.serialize(),
                 [super.constructor.name]: super.serialize()
             };
             return serialization;
         }
         deserialize(_serialization) {
-            this.backgroundColor = _serialization.backgroundColor;
-            this.backgroundEnabled = _serialization.backgroundEnabled;
-            this.projection = _serialization.projection;
-            this.fieldOfView = _serialization.fieldOfView;
-            this.aspectRatio = _serialization.aspect;
-            this.direction = _serialization.direction;
             this.pivot.deserialize(_serialization.pivot);
             super.deserialize(_serialization[super.constructor.name]);
-            switch (this.projection) {
-                case PROJECTION.ORTHOGRAPHIC:
-                    this.projectOrthographic(); // TODO: serialize and deserialize parameters
+            switch (this.camera.projection) {
+                case FudgeCore.PROJECTION.ORTHOGRAPHIC:
+                    // this.projectOrthographic(); // TODO: serialize and deserialize parameters
                     break;
-                case PROJECTION.CENTRAL:
-                    this.projectCentral();
+                case FudgeCore.PROJECTION.CENTRAL:
+                    //  this.camera = new CameraPerspective();
                     break;
             }
             return this;
@@ -2901,16 +2870,16 @@ var FudgeCore;
         getMutatorAttributeTypes(_mutator) {
             let types = super.getMutatorAttributeTypes(_mutator);
             if (types.direction)
-                types.direction = FIELD_OF_VIEW;
+                types.direction = FudgeCore.FIELD_OF_VIEW;
             if (types.projection)
-                types.projection = PROJECTION;
+                types.projection = FudgeCore.PROJECTION;
             return types;
         }
         mutate(_mutator) {
             super.mutate(_mutator);
-            switch (this.projection) {
-                case PROJECTION.CENTRAL:
-                    this.projectCentral(this.aspectRatio, this.fieldOfView, this.direction);
+            switch (this.camera.projection) {
+                case FudgeCore.PROJECTION.CENTRAL:
+                    this.camera = new FudgeCore.CameraCentral();
                     break;
             }
         }
@@ -3167,6 +3136,287 @@ var FudgeCore;
         }
     }
     FudgeCore.ComponentTransform = ComponentTransform;
+})(FudgeCore || (FudgeCore = {}));
+// The main camera class for ComponentCamera to interact with
+var FudgeCore;
+// The main camera class for ComponentCamera to interact with
+(function (FudgeCore) {
+    let FIELD_OF_VIEW;
+    (function (FIELD_OF_VIEW) {
+        FIELD_OF_VIEW[FIELD_OF_VIEW["HORIZONTAL"] = 0] = "HORIZONTAL";
+        FIELD_OF_VIEW[FIELD_OF_VIEW["VERTICAL"] = 1] = "VERTICAL";
+        FIELD_OF_VIEW[FIELD_OF_VIEW["DIAGONAL"] = 2] = "DIAGONAL";
+    })(FIELD_OF_VIEW = FudgeCore.FIELD_OF_VIEW || (FudgeCore.FIELD_OF_VIEW = {}));
+    /**
+     * Defines identifiers for the various projections a camera can provide.
+     * TODO: change back to number enum if strings not needed
+     */
+    let PROJECTION;
+    (function (PROJECTION) {
+        PROJECTION["CENTRAL"] = "central";
+        PROJECTION["ORTHOGRAPHIC"] = "orthographic";
+        PROJECTION["DIMETRIC"] = "dimetric";
+        PROJECTION["STEREO"] = "stereo";
+        PROJECTION["CAVALIER"] = "cavalier";
+        PROJECTION["CABINET"] = "cabinet";
+        PROJECTION["ISOMETRIC"] = "isometric";
+    })(PROJECTION = FudgeCore.PROJECTION || (FudgeCore.PROJECTION = {}));
+    class Camera {
+        constructor() {
+            this.pivot = null;
+            this.projection = null; // the projection of the camera (default = perspective)
+            this.transform = new FudgeCore.Matrix4x4; // The matrix to multiply each scene objects transformation by, to determine where it will be drawn.
+            this.backgroundColor = new FudgeCore.Color(0, 0, 0.3, 1); // The color of the background the camera will render.
+            this.backgroundEnabled = true; // Determines whether or not the background of this camera will be rendered.
+            // TODO: examine, if background should be an attribute of Camera or Viewport
+            this.fieldOfView = null; // The camera's sensorangle.
+            this.aspectRatio = null;
+            this.direction = null;
+            this.pivot = FudgeCore.Matrix4x4.IDENTITY;
+        }
+        setProjection(cam) {
+            this.projection = cam.projection;
+        }
+        getProjection() {
+            return this.projection;
+        }
+        getBackgoundColor() {
+            return this.backgroundColor;
+        }
+        getBackgroundEnabled() {
+            return this.backgroundEnabled;
+        }
+        /**
+        * Return the calculated normed dimension of the projection space
+        */
+        getProjectionRectangle() {
+            let tanFov = Math.tan(Math.PI * this.fieldOfView / 360); // Half of the angle, to calculate dimension from the center -> right angle
+            let tanHorizontal = 0;
+            let tanVertical = 0;
+            if (this.direction == FIELD_OF_VIEW.DIAGONAL) {
+                let aspect = Math.sqrt(this.aspectRatio);
+                tanHorizontal = tanFov * aspect;
+                tanVertical = tanFov / aspect;
+            }
+            else if (this.direction == FIELD_OF_VIEW.VERTICAL) {
+                tanVertical = tanFov;
+                tanHorizontal = tanVertical * this.aspectRatio;
+            }
+            else { //FOV_DIRECTION.HORIZONTAL
+                tanHorizontal = tanFov;
+                tanVertical = tanHorizontal / this.aspectRatio;
+            }
+            return FudgeCore.Rectangle.GET(0, 0, tanHorizontal * 2, tanVertical * 2);
+        }
+        /**
+      * Returns the multiplikation of the worldtransformation of the camera container with the projection matrix
+      * @returns the world-projection-matrix
+      *
+      */
+        get ViewProjectionMatrix() {
+            return this.transform;
+        }
+        //#region Transfer
+        serialize() {
+            let serialization = {
+                backgroundColor: this.backgroundColor,
+                backgroundEnabled: this.backgroundEnabled,
+                projection: this.projection,
+                fieldOfView: this.fieldOfView,
+                direction: this.direction,
+                aspect: this.aspectRatio,
+                pivot: this.pivot.serialize()
+                //  [super.constructor.name]: super.serialize()
+            };
+            return serialization;
+        }
+        deserialize(_serialization) {
+            this.backgroundColor = _serialization.backgroundColor;
+            this.backgroundEnabled = _serialization.backgroundEnabled;
+            this.projection = _serialization.projection;
+            this.fieldOfView = _serialization.fieldOfView;
+            this.aspectRatio = _serialization.aspect;
+            this.direction = _serialization.direction;
+            this.pivot.deserialize(_serialization.pivot);
+            // super.deserialize(_serialization[super.constructor.name]);
+            switch (this.projection) {
+                case PROJECTION.ORTHOGRAPHIC:
+                    // this.projectOrthographic(); // TODO: serialize and deserialize parameters
+                    break;
+                case PROJECTION.CENTRAL:
+                    //  this.camera = new CameraPerspective();
+                    break;
+            }
+            return this;
+        }
+    }
+    FudgeCore.Camera = Camera;
+})(FudgeCore || (FudgeCore = {}));
+/// <reference path="Camera.ts"/>
+var FudgeCore;
+/// <reference path="Camera.ts"/>
+(function (FudgeCore) {
+    // Class to set camera to orthographic projection
+    /**
+     **
+     * Set the camera to orthographic projection. The origin is in the top left corner of the canvas.
+     * @param _left The positionvalue of the projectionspace's left border. (Default = 0)
+     * @param _right The positionvalue of the projectionspace's right border. (Default = canvas.clientWidth)
+     * @param _bottom The positionvalue of the projectionspace's bottom border.(Default = canvas.clientHeight)
+     * @param _top The positionvalue of the projectionspace's top border.(Default = 0)
+     */
+    class CameraOrthographic extends FudgeCore.Camera {
+        constructor() {
+            super();
+            this.left = -10;
+            this.right = 10;
+            this.bottom = -10;
+            this.top = 10;
+            this.near = -10;
+            this.far = 10;
+            this.projection = FudgeCore.PROJECTION.ORTHOGRAPHIC;
+            this.transform = FudgeCore.Matrix4x4.PROJECTION_ORTHOGRAPHIC(this.left, this.right, this.bottom, this.top, this.near, this.far);
+        }
+        setProjectionBorder(leftBorder, topBorder, nearClippingPlane, farClippingPlane) {
+            this.left = leftBorder;
+            this.top = topBorder;
+            this.right = this.left * -1;
+            this.bottom = -this.top;
+            this.near = nearClippingPlane;
+            this.far = farClippingPlane;
+            this.transform = FudgeCore.Matrix4x4.PROJECTION_ORTHOGRAPHIC(this.left, this.right, this.bottom, this.top, this.near, this.far);
+        }
+    }
+    FudgeCore.CameraOrthographic = CameraOrthographic;
+})(FudgeCore || (FudgeCore = {}));
+// Camera in Cavalier Projection
+/// <reference path="CameraOrthographic.ts"/>
+var FudgeCore;
+// Camera in Cavalier Projection
+/// <reference path="CameraOrthographic.ts"/>
+(function (FudgeCore) {
+    class CameraCabinett extends FudgeCore.CameraOrthographic {
+        constructor() {
+            super();
+            this.alpha = 65;
+            this.projection = FudgeCore.PROJECTION.CABINET;
+            this.transform = FudgeCore.Matrix4x4.MULTIPLICATION(this.transform, FudgeCore.Matrix4x4.PROJECTION_CABINET(this.alpha));
+        }
+    }
+    FudgeCore.CameraCabinett = CameraCabinett;
+})(FudgeCore || (FudgeCore = {}));
+// Camera in Cavalier Projection
+/// <reference path="CameraOrthographic.ts"/>
+var FudgeCore;
+// Camera in Cavalier Projection
+/// <reference path="CameraOrthographic.ts"/>
+(function (FudgeCore) {
+    class CameraCavalier extends FudgeCore.CameraOrthographic {
+        constructor() {
+            super();
+            this.alpha = 45;
+            this.projection = FudgeCore.PROJECTION.CAVALIER;
+            this.transform = FudgeCore.Matrix4x4.MULTIPLICATION(this.transform, FudgeCore.Matrix4x4.PROJECTION_CAVALIER(this.alpha));
+        }
+    }
+    FudgeCore.CameraCavalier = CameraCavalier;
+})(FudgeCore || (FudgeCore = {}));
+// Class to set camera to perspective mode
+/**
+ * @param _aspect The aspect ratio between width and height of projectionspace.(Default = canvas.clientWidth / canvas.ClientHeight)
+ * @param _fieldOfView The field of view in Degrees. (Default = 45)
+ * @param _direction The plane on which the fieldOfView-Angle is given
+ *
+ *
+ */
+/// <reference path="Camera.ts"/>
+var FudgeCore;
+// Class to set camera to perspective mode
+/**
+ * @param _aspect The aspect ratio between width and height of projectionspace.(Default = canvas.clientWidth / canvas.ClientHeight)
+ * @param _fieldOfView The field of view in Degrees. (Default = 45)
+ * @param _direction The plane on which the fieldOfView-Angle is given
+ *
+ *
+ */
+/// <reference path="Camera.ts"/>
+(function (FudgeCore) {
+    class CameraCentral extends FudgeCore.Camera {
+        constructor() {
+            super();
+            this.fieldOfView = 45; // The camera's sensorangle.
+            this.aspectRatio = 1.0;
+            this.direction = FudgeCore.FIELD_OF_VIEW.DIAGONAL;
+            this.near = 1;
+            this.far = 2000;
+            this.projection = FudgeCore.PROJECTION.CENTRAL;
+            this.transform = FudgeCore.Matrix4x4.PROJECTION_CENTRAL(this.aspectRatio, this.fieldOfView, this.near, this.far, this.direction); // TODO: remove magic numbers
+            console.log(this.transform);
+        }
+        getAspect() {
+            return this.aspectRatio;
+        }
+        getFieldOfView() {
+            return this.fieldOfView;
+        }
+        getDirection() {
+            return this.direction;
+        }
+    }
+    FudgeCore.CameraCentral = CameraCentral;
+})(FudgeCore || (FudgeCore = {}));
+// Camera in Cavalier Projection
+/// <reference path="CameraOrthographic.ts"/>
+var FudgeCore;
+// Camera in Cavalier Projection
+/// <reference path="CameraOrthographic.ts"/>
+(function (FudgeCore) {
+    class CameraIsometric extends FudgeCore.CameraOrthographic {
+        constructor() {
+            super();
+            this.projection = FudgeCore.PROJECTION.ISOMETRIC;
+            this.transform = FudgeCore.Matrix4x4.MULTIPLICATION(this.transform, FudgeCore.Matrix4x4.PROJECTION_ISOMETRIC());
+        }
+    }
+    FudgeCore.CameraIsometric = CameraIsometric;
+})(FudgeCore || (FudgeCore = {}));
+// Camera used to merge two PerspectiveCamera into stereoscopic 3D 
+/**
+ * Effects: Anaglyph; Paralax; Stereo
+ *
+ * Properties:
+ * float aspect = 1; float
+ *
+ *
+ */
+var FudgeCore;
+// Camera used to merge two PerspectiveCamera into stereoscopic 3D 
+/**
+ * Effects: Anaglyph; Paralax; Stereo
+ *
+ * Properties:
+ * float aspect = 1; float
+ *
+ *
+ */
+(function (FudgeCore) {
+    class CameraStereo {
+        constructor() {
+            this.aspect = 1.0;
+            this.eyeSep = 0.064;
+            this.lCamera = new FudgeCore.ComponentCamera;
+            this.rCamera = new FudgeCore.ComponentCamera;
+            /*
+              public update(camera : CameraPerspective): void {
+                  // update the cameras
+              }
+              */
+        }
+        CameraStereo() {
+            ///       this.getFieldOfView();
+        }
+    }
+    FudgeCore.CameraStereo = CameraStereo;
 })(FudgeCore || (FudgeCore = {}));
 // <reference path="DebugAlert.ts"/>
 var FudgeCore;
@@ -3862,12 +4112,10 @@ var FudgeCore;
     FudgeCore.Rectangle = Rectangle;
 })(FudgeCore || (FudgeCore = {}));
 /// <reference path="../Light/Light.ts"/>
-/// <reference path="../Event/Event.ts"/>
 /// <reference path="../Component/ComponentLight.ts"/>
 /// <reference path="../Math/Rectangle.ts"/>
 var FudgeCore;
 /// <reference path="../Light/Light.ts"/>
-/// <reference path="../Event/Event.ts"/>
 /// <reference path="../Component/ComponentLight.ts"/>
 /// <reference path="../Math/Rectangle.ts"/>
 (function (FudgeCore) {
@@ -3878,11 +4126,11 @@ var FudgeCore;
      * [[RenderManager]].viewport -> [[Viewport]].source -> [[Viewport]].destination -> DOM-Canvas -> Client(CSS)
      * @authors Jascha Karagöl, HFU, 2019 | Jirka Dell'Oro-Friedl, HFU, 2019
      */
-    class Viewport extends FudgeCore.EventTargetƒ {
+    class Viewport extends EventTarget {
         constructor() {
             super(...arguments);
             this.name = "Viewport"; // The name to call this viewport by.
-            this.camera = null; // The camera representing the view parameters to render the branch.
+            this.cmpCamera = null; // The camera representing the view parameters to render the branch.
             // TODO: verify if client to canvas should be in Viewport or somewhere else (Window, Container?)
             // Multiple viewports using the same canvas shouldn't differ here...
             // different framing methods can be used, this is the default
@@ -3953,7 +4201,7 @@ var FudgeCore;
          */
         initialize(_name, _branch, _camera, _canvas) {
             this.name = _name;
-            this.camera = _camera;
+            this.cmpCamera = _camera;
             this.canvas = _canvas;
             this.crc2 = _canvas.getContext("2d");
             this.rectSource = FudgeCore.RenderManager.getCanvasRect();
@@ -4009,18 +4257,18 @@ var FudgeCore;
          */
         draw() {
             FudgeCore.RenderManager.resetFrameBuffer();
-            if (!this.camera.isActive)
+            if (!this.cmpCamera.isActive)
                 return;
             if (this.adjustingFrames)
                 this.adjustFrames();
             if (this.adjustingCamera)
                 this.adjustCamera();
-            FudgeCore.RenderManager.clear(this.camera.backgroundColor);
+            FudgeCore.RenderManager.clear(this.cmpCamera.camera.getBackgoundColor());
             if (FudgeCore.RenderManager.addBranch(this.branch))
                 // branch has not yet been processed fully by rendermanager -> update all registered nodes
                 FudgeCore.RenderManager.update();
-            FudgeCore.RenderManager.setLights(this.lights);
-            FudgeCore.RenderManager.drawBranch(this.branch, this.camera);
+            //RenderManager.setLights(this.lights);
+            FudgeCore.RenderManager.drawBranch(this.branch, this.cmpCamera);
             this.crc2.imageSmoothingEnabled = false;
             this.crc2.drawImage(FudgeCore.RenderManager.getCanvas(), this.rectSource.x, this.rectSource.y, this.rectSource.width, this.rectSource.height, this.rectDestination.x, this.rectDestination.y, this.rectDestination.width, this.rectDestination.height);
         }
@@ -4035,7 +4283,7 @@ var FudgeCore;
             if (FudgeCore.RenderManager.addBranch(this.branch))
                 // branch has not yet been processed fully by rendermanager -> update all registered nodes
                 FudgeCore.RenderManager.update();
-            this.pickBuffers = FudgeCore.RenderManager.drawBranchForRayCast(this.branch, this.camera);
+            this.pickBuffers = FudgeCore.RenderManager.drawBranchForRayCast(this.branch, this.cmpCamera);
             this.crc2.imageSmoothingEnabled = false;
             this.crc2.drawImage(FudgeCore.RenderManager.getCanvas(), this.rectSource.x, this.rectSource.y, this.rectSource.width, this.rectSource.height, this.rectDestination.x, this.rectDestination.y, this.rectDestination.width, this.rectDestination.height);
         }
@@ -4071,8 +4319,28 @@ var FudgeCore;
          * Adjust the camera parameters to fit the rendering into the render vieport
          */
         adjustCamera() {
-            let rect = FudgeCore.RenderManager.getViewportRectangle();
-            this.camera.projectCentral(rect.width / rect.height, this.camera.getFieldOfView());
+            //let rect: Rectangle = RenderManager.getViewportRectangle();
+            switch (this.cmpCamera.camera.projection) {
+                case FudgeCore.PROJECTION.CENTRAL:
+                    console.log("Perspective");
+                    this.cmpCamera.setType(FudgeCore.CameraCentral);
+                    break;
+                case FudgeCore.PROJECTION.ORTHOGRAPHIC:
+                    console.log("Orthographic");
+                    this.cmpCamera.setType(FudgeCore.CameraOrthographic);
+                    break;
+                case FudgeCore.PROJECTION.CABINET:
+                    console.log("Cabinett");
+                    this.cmpCamera.setType(FudgeCore.CameraCabinett);
+                    break;
+                case FudgeCore.PROJECTION.CAVALIER:
+                    console.log("Cavalier");
+                    // this.cmpCamera.setType(CameraCavalier);
+                    break;
+                default:
+                    console.log("No camera projection selected");
+                    break;
+            }
         }
         // #endregion
         //#region Points
@@ -4090,7 +4358,7 @@ var FudgeCore;
          * Returns a point on the render-rectangle matching the given point on the source rectangle
          */
         pointSourceToRender(_source) {
-            let projectionRectangle = this.camera.getProjectionRectangle();
+            let projectionRectangle = this.cmpCamera.camera.getProjectionRectangle();
             let point = this.frameSourceToRender.getPoint(_source, projectionRectangle);
             return point;
         }
@@ -4235,7 +4503,7 @@ var FudgeCore;
             for (let node of this.branch.branch) {
                 let cmpLights = node.getComponents(FudgeCore.ComponentLight);
                 for (let cmpLight of cmpLights) {
-                    let type = cmpLight.light.getType();
+                    let type = cmpLight.light.type;
                     let lightsOfType = this.lights.get(type);
                     if (!lightsOfType) {
                         lightsOfType = [];
@@ -4981,7 +5249,7 @@ var FudgeCore;
         set translation(_translation) {
             this.data.set(_translation.get(), 12);
             // no full cache reset required
-            this.vectors.translation = _translation.copy;
+            this.vectors.translation = _translation;
             this.mutator = null;
         }
         /**
@@ -5162,6 +5430,7 @@ var FudgeCore;
                 d * ((tmp18 * m12 + tmp23 * m32 + tmp15 * m02) - (tmp22 * m32 + tmp14 * m02 + tmp19 * m12)),
                 d * ((tmp22 * m22 + tmp16 * m02 + tmp21 * m12) - (tmp20 * m12 + tmp23 * m22 + tmp17 * m02)) // [15]
             ]);
+            console.log(matrix);
             return matrix;
         }
         /**
@@ -5271,6 +5540,15 @@ var FudgeCore;
         }
         //#endregion
         //#region PROJECTIONS
+        /** Main method to call the according projection
+         * @param
+        */
+        static PROJECTION(projection) {
+            switch (projection) {
+                default:
+                    console.log("todo");
+            }
+        }
         /**
          * Computes and returns a matrix that applies perspective to an object, if its transform is multiplied by it.
          * @param _aspect The aspect ratio between width and height of projectionspace.(Default = canvas.clientWidth / canvas.ClientHeight)
@@ -5311,7 +5589,7 @@ var FudgeCore;
          * @param _near The positionvalue of the projectionspace's near border.
          * @param _far The positionvalue of the projectionspace's far border
          */
-        static PROJECTION_ORTHOGRAPHIC(_left, _right, _bottom, _top, _near = -400, _far = 400) {
+        static PROJECTION_ORTHOGRAPHIC(_left, _right, _bottom, _top, _near, _far) {
             // const matrix: Matrix4x4 = new Matrix4x4;
             const matrix = FudgeCore.Recycler.get(Matrix4x4);
             matrix.data.set([
@@ -5323,6 +5601,71 @@ var FudgeCore;
                 (_near + _far) / (_near - _far),
                 1
             ]);
+            // return matrix;
+            matrix.data.set([
+                2 / (_right - _left), 0, 0, 0,
+                0, 2 / (_top - _bottom), 0, 0,
+                0, 0, -2 / (_far - _near), 0,
+                0, 0, 0, 1
+            ]);
+            return matrix;
+        }
+        /**
+         *
+         * @param _alpha (default = 45)
+         */
+        static PROJECTION_CAVALIER(_alpha) {
+            const matrix = FudgeCore.Recycler.get(Matrix4x4);
+            let angle = (Math.PI / 180) * _alpha;
+            // let beta: number = 45;
+            // let alpha = 45;
+            matrix.data.set([
+                1, 0, -Math.cos(angle), 0,
+                0, 1, Math.sin(angle), 0,
+                0, 0, 0, 0,
+                0, 0, 0, 1
+            ]);
+            // TODO: Fix this.INVERSION()
+            matrix.data.set([
+                1, 0, 0, 0,
+                0, 1, 0, 0,
+                Math.cos(angle), Math.sin(angle), 0, 0,
+                0, 0, 0, 1
+            ]);
+            return matrix;
+        }
+        /**
+         *
+         * @param _alpha (default = 45)
+         */
+        static PROJECTION_CABINET(angle) {
+            const matrix = FudgeCore.Recycler.get(Matrix4x4);
+            let angleInRadians = (Math.PI / 180) * angle;
+            matrix.data.set([
+                1, 0, (Math.cos(angleInRadians)) / 2, 0,
+                0, 1, Math.sin(angleInRadians) / 2, 0,
+                0, 0, 0, 0,
+                0, 0, 0, 1
+            ]);
+            // Transpose matrix
+            matrix.data.set([
+                1, 0, 0, 0,
+                0, 1, 0, 0,
+                (Math.cos(angleInRadians)) / 2, Math.sin(angleInRadians) / 2, 0, 0,
+                0, 0, 0, 1
+            ]);
+            return matrix;
+        }
+        static PROJECTION_ISOMETRIC() {
+            let angle = 45;
+            const matrix = FudgeCore.Recycler.get(Matrix4x4);
+            let angleInRadians = (Math.PI / 180) * angle;
+            matrix.data.set([
+                1, 0, 0, 0,
+                0, 1, 0, 0,
+                angleInRadians, angleInRadians, 0, 0,
+                0, 0, 0, 1
+            ]);
             return matrix;
         }
         //#endregion
@@ -5331,34 +5674,34 @@ var FudgeCore;
          * Rotate this matrix by given vector in the order Z, Y, X. Right hand rotation is used, thumb points in axis direction, fingers curling indicate rotation
          * @param _by
          */
-        rotate(_by, _fromLeft = false) {
-            this.rotateZ(_by.z, _fromLeft);
-            this.rotateY(_by.y, _fromLeft);
-            this.rotateX(_by.x, _fromLeft);
+        rotate(_by) {
+            this.rotateZ(_by.z);
+            this.rotateY(_by.y);
+            this.rotateX(_by.x);
         }
         /**
          * Adds a rotation around the x-Axis to this matrix
          */
-        rotateX(_angleInDegrees, _fromLeft = false) {
-            let rotation = Matrix4x4.ROTATION_X(_angleInDegrees);
-            this.multiply(rotation, _fromLeft);
-            FudgeCore.Recycler.store(rotation);
+        rotateX(_angleInDegrees) {
+            const matrix = Matrix4x4.MULTIPLICATION(this, Matrix4x4.ROTATION_X(_angleInDegrees));
+            this.set(matrix);
+            FudgeCore.Recycler.store(matrix);
         }
         /**
          * Adds a rotation around the y-Axis to this matrix
          */
-        rotateY(_angleInDegrees, _fromLeft = false) {
-            let rotation = Matrix4x4.ROTATION_Y(_angleInDegrees);
-            this.multiply(rotation, _fromLeft);
-            FudgeCore.Recycler.store(rotation);
+        rotateY(_angleInDegrees) {
+            const matrix = Matrix4x4.MULTIPLICATION(this, Matrix4x4.ROTATION_Y(_angleInDegrees));
+            this.set(matrix);
+            FudgeCore.Recycler.store(matrix);
         }
         /**
          * Adds a rotation around the z-Axis to this matrix
          */
-        rotateZ(_angleInDegrees, _fromLeft = false) {
-            let rotation = Matrix4x4.ROTATION_Z(_angleInDegrees);
-            this.multiply(rotation, _fromLeft);
-            FudgeCore.Recycler.store(rotation);
+        rotateZ(_angleInDegrees) {
+            const matrix = Matrix4x4.MULTIPLICATION(this, Matrix4x4.ROTATION_Z(_angleInDegrees));
+            this.set(matrix);
+            FudgeCore.Recycler.store(matrix);
         }
         /**
          * Adjusts the rotation of this matrix to face the given target and tilts it to accord with the given up vector
@@ -5436,10 +5779,9 @@ var FudgeCore;
         /**
          * Multiply this matrix with the given matrix
          */
-        multiply(_matrix, _fromLeft = false) {
-            const matrix = _fromLeft ? Matrix4x4.MULTIPLICATION(_matrix, this) : Matrix4x4.MULTIPLICATION(this, _matrix);
-            this.set(matrix);
-            FudgeCore.Recycler.store(matrix);
+        multiply(_matrix) {
+            this.set(Matrix4x4.MULTIPLICATION(this, _matrix));
+            this.mutator = null;
         }
         //#endregion
         //#region Transfer
@@ -7096,15 +7438,17 @@ var FudgeCore;
          * RenderManager passes it on to all shaders used that can process light
          * @param _lights
          */
-        static setLights(_lights) {
+        /*
+        public static setLights(_lights: MapLightTypeToLightList): void {
             // let renderLights: RenderLights = RenderManager.createRenderLights(_lights);
             for (let entry of RenderManager.renderShaders) {
-                let renderShader = entry[1].getReference();
+                let renderShader: RenderShader = entry[1].getReference();
                 RenderManager.setLightsInShader(renderShader, _lights);
             }
             // debugger;
         }
         // #endregion
+
         // #region Rendering
         /**
          * Update all render data. After RenderManager, multiple viewports can render their associated data without updating the same data multiple times
@@ -7142,7 +7486,8 @@ var FudgeCore;
             else
                 finalTransform = _node.mtxWorld; // caution, RenderManager is a reference...
             // multiply camera matrix
-            let projection = FudgeCore.Matrix4x4.MULTIPLICATION(_cmpCamera.ViewProjectionMatrix, finalTransform);
+            //            let projection: Matrix4x4 = _cmpCamera.camera.ViewProfjectionMatrix;
+            let projection = FudgeCore.Matrix4x4.MULTIPLICATION(_cmpCamera.camera.ViewProjectionMatrix, finalTransform);
             _drawNode(_node, finalTransform, projection);
             for (let name in _node.getChildren()) {
                 let childNode = _node.getChildren()[name];

@@ -93,7 +93,7 @@ var Scenes;
     Scenes.createViewport = createViewport;
     function createCamera(_translation = new ƒ.Vector3(1, 1, 10), _lookAt = new ƒ.Vector3()) {
         let cmpCamera = new ƒ.ComponentCamera();
-        cmpCamera.projectCentral(1, 45, ƒ.FIELD_OF_VIEW.DIAGONAL);
+        cmpCamera.setType(ƒ.CameraCentral);
         cmpCamera.pivot.translate(_translation);
         cmpCamera.pivot.lookAt(_lookAt);
         return cmpCamera;
@@ -126,7 +126,7 @@ var Scenes;
         _viewport.activateKeyboardEvent("\u0192keydown" /* DOWN */, true);
         _viewport.addEventListener("\u0192keydown" /* DOWN */, rotate);
         function rotate(_event) {
-            let mtxCamera = _viewport.camera.pivot;
+            let mtxCamera = _viewport.cmpCamera.pivot;
             let vctCamera = ƒ.Vector3.ZERO();
             vctCamera.y = (0.1 *
                 (_event.code == ƒ.KEYBOARD_CODE.ARROW_UP || _event.code == ƒ.KEYBOARD_CODE.W ? 1 :
