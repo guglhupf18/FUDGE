@@ -41,7 +41,7 @@ namespace AudioTest {
         */
 
         // 1. Audio Settings und Audio Data Handler
-        // audioSettings = new ƒ.AudioSettings(1);
+     //   audioSettings = new ƒ.AudioSettings(1);
         // 2. Audio Session Data anlegen
         audioSessionData = new ƒ.AudioSessionData();
 
@@ -53,8 +53,8 @@ namespace AudioTest {
         // 4. Create Audio
         // 4.1 Audio talks to AudioSession
         // 4.2 Audio bekommt Buffer
-        // audio = new ƒ.Audio(audioSettings.getAudioContext(), audioSessionData, audioSourceTwo, 1, false);
-        // audioTest = new ƒ.Audio(audioSettings.getAudioContext(), audioSessionData, audioFileSource, 1, false);
+      ////  audio = new ƒ.Audio(audioSettings.getAudioContext(), audioSessionData, audioSourceTwo, 1, false);
+     //   audioTest = new ƒ.Audio(audioSettings.getAudioContext(), audioSessionData, audioFileSource, 1, false);
         console.log("audio: " + audio + " | " + audioTest);
         // 5. Create ComponentAudio with Audio
         componentAudio = new ƒ.ComponentAudio(audio);
@@ -99,7 +99,7 @@ namespace AudioTest {
             // let ctxCamera: ƒ.Matrix4x4 = viewport.camera.getContainer().cmpTransform.local;
             // ctxCamera.lookAt(position);
             viewport.draw();
-            printInfo(body, viewport.camera.getContainer());
+            printInfo(body, viewport.cmpCamera.getContainer());
         }
     }
 
@@ -123,7 +123,7 @@ namespace AudioTest {
 
         function move(_event: ƒ.KeyboardEventƒ): void {
             const mtxBody: ƒ.Matrix4x4 = _body.cmpTransform.local;
-            let mtxCamera: ƒ.Matrix4x4 = _viewport.camera.getContainer().cmpTransform.local;
+            let mtxCamera: ƒ.Matrix4x4 = _viewport.cmpCamera.getContainer().cmpTransform.local;
 
             mtxBody.translateZ(0.1 *
                 (_event.code == ƒ.KEYBOARD_CODE.ARROW_UP || _event.code == ƒ.KEYBOARD_CODE.W ? -1 :
@@ -168,7 +168,7 @@ namespace AudioTest {
                 case ƒ.KEYBOARD_CODE.P:
                     //play Sound
                     console.log("pressed p");
-                    // componentAudio.playAudio(audioSettings.getAudioContext());
+                  //  componentAudio.playAudio(audioSettings.getAudioContext());
                     break;
                 case ƒ.KEYBOARD_CODE.L:
                     //play Sound

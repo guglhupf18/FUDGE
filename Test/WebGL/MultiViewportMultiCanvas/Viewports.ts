@@ -15,7 +15,7 @@ namespace RenderManagerRendering {
         let viewPorts: ƒ.Viewport[] = [];
         for (let i: number = 0; i < canvasList.length; i++) {
             let cmpCamera: ƒ.ComponentCamera = Scenes.createCamera(posCameras[i]);
-            cmpCamera.projectCentral(1, 45);
+            cmpCamera.setType(ƒ.CameraCentral);
             let viewPort: ƒ.Viewport = new ƒ.Viewport();
             viewPort.initialize(canvasList[i].id, branch, cmpCamera, canvasList[i]);
             viewPorts.push(viewPort);

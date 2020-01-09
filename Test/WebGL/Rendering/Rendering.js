@@ -11,7 +11,7 @@ var RenderManagerRendering;
         ƒ.RenderManager.update();
         // initialize viewport
         let cmpCamera = Scenes.createCamera(new ƒ.Vector3(3, 3, 5));
-        cmpCamera.projectCentral(1, 45);
+        cmpCamera.setType(ƒ.CameraCentral);
         let canvas = Scenes.createCanvas();
         document.body.appendChild(canvas);
         let viewPort = new ƒ.Viewport();
