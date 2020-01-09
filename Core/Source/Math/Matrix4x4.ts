@@ -504,7 +504,15 @@ namespace FudgeCore {
       const matrix: Matrix4x4 = Recycler.get(Matrix4x4);
 
       let angleInRadians: number = (Math.PI / 180) * angle;
+      // 
+      matrix.data.set([
+        1, 0, angleInRadians, 0,
+        0, 1, angleInRadians, 0,
+        0, 0, 0, 0,
+        0, 0, 0, 1
 
+      ]);
+      // Transpose 
       matrix.data.set([
         1, 0, 0, 0,
         0, 1, 0, 0,
