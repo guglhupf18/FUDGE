@@ -22,8 +22,7 @@ namespace FudgeCore {
             super();
             
             this.projection = PROJECTION.CENTRAL;
-            this.transform = Matrix4x4.PROJECTION_CENTRAL(this.aspectRatio, this.fieldOfView, this.near, this.far, this.direction); // TODO: remove magic numbers
-            console.log(this.transform);
+            this.transform = Matrix4x4.PROJECTION_CENTRAL(this.aspectRatio, this.fieldOfView, this.near, this.far, this.direction);
         }
 
         public getAspect(): number {
@@ -38,6 +37,6 @@ namespace FudgeCore {
             return this.direction;
         }
 
-
+        
     }
 }

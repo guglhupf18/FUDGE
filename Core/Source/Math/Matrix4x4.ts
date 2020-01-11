@@ -403,7 +403,7 @@ namespace FudgeCore {
         matrix.data[0] = f / _aspect;
       else //FOV_DIRECTION.HORIZONTAL
         matrix.data[5] = f * _aspect;
-
+        
       return matrix;
     }
 
@@ -418,20 +418,7 @@ namespace FudgeCore {
      */
     public static PROJECTION_ORTHOGRAPHIC(_left: number, _right: number, _bottom: number, _top: number, _near: number, _far: number): Matrix4x4 {
       // const matrix: Matrix4x4 = new Matrix4x4;
-      const matrix: Matrix4x4 = Recycler.get(Matrix4x4); 
- 
-      matrix.data.set([
-        2 / (_right - _left), 0, 0, 0,
-        0, 2 / (_top - _bottom), 0, 0,
-        0, 0, 2 / (_near - _far), 0,
-        (_left + _right) / (_left - _right),
-        (_bottom + _top) / (_bottom - _top),
-        (_near + _far) / (_near - _far),
-        1
-      ]);
-     // return matrix;
-     
-    
+      const matrix: Matrix4x4 = Recycler.get(Matrix4x4);     
       
       matrix.data.set([
         2 / (_right - _left), 0, 0, 0,
@@ -441,32 +428,33 @@ namespace FudgeCore {
 
       ]);
       return matrix;
-      
-    
+
     }
 
     /**
      * 
-     * @param _alpha (default = 45)
+     * @param _alpha  (default = 45)
      */
     public static PROJECTION_CAVALIER(_alpha: number): Matrix4x4 {
       const matrix: Matrix4x4 = Recycler.get(Matrix4x4); 
-      let angle: number = (Math.PI / 180) * _alpha;
+      let angle: number = _alpha;
+      
+      let angleInRadians: number = (Math.PI / 180) * angle;
      // let beta: number = 45;
      // let alpha = 45;
       matrix.data.set([
-        1, 0, -Math.cos(angle), 0,
-        0, 1, Math.sin(angle), 0,
+        1, 0, -Math.cos(angleInRadians), 0,
+        0, 1, Math.sin(angleInRadians), 0,
         0, 0, 0, 0,
         0, 0, 0, 1
 
       ]);
-      // TODO: Fix this.INVERSION()
+      // TODO: Transpose()
 
       matrix.data.set([
         1, 0, 0, 0,
         0, 1, 0, 0,
-        Math.cos(angle), Math.sin(angle), 0, 0,
+        Math.cos(angleInRadians), Math.sin(angle), 0, 0,
         0, 0, 0, 1
 
       ]);
@@ -477,8 +465,9 @@ namespace FudgeCore {
      * 
      * @param _alpha (default = 45)
      */
-    public static PROJECTION_CABINET(angle: number): Matrix4x4 {
+    public static PROJECTION_CABINET(_alpha: number): Matrix4x4 {
       const matrix: Matrix4x4 = Recycler.get(Matrix4x4);
+      let angle: number = _alpha;
       let angleInRadians: number = (Math.PI / 180) * angle;
 
       matrix.data.set([
@@ -512,7 +501,7 @@ namespace FudgeCore {
         0, 0, 0, 1
 
       ]);
-      // Transpose 
+      // Transpose matrix
       matrix.data.set([
         1, 0, 0, 0,
         0, 1, 0, 0,

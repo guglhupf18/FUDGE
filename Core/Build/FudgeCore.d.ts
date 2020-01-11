@@ -1384,20 +1384,18 @@ declare namespace FudgeCore {
         aspectRatio: number;
         direction: FIELD_OF_VIEW;
         constructor();
-        setProjection(cam: Camera): void;
-        getProjection(): PROJECTION;
         getBackgoundColor(): Color;
         getBackgroundEnabled(): boolean;
-        /**
-        * Return the calculated normed dimension of the projection space
-        */
-        getProjectionRectangle(): Rectangle;
         /**
       * Returns the multiplikation of the worldtransformation of the camera container with the projection matrix
       * @returns the world-projection-matrix
       *
       */
         readonly ViewProjectionMatrix: Matrix4x4;
+        /**
+        * Return the calculated normed dimension of the projection space
+        */
+        getProjectionRectangle(): Rectangle;
         serialize(): Serialization;
         deserialize(_serialization: Serialization): Serializable;
     }
@@ -1423,7 +1421,7 @@ declare namespace FudgeCore {
     }
 }
 declare namespace FudgeCore {
-    class CameraCabinett extends CameraOrthographic {
+    class CameraCabinet extends CameraOrthographic {
         private alpha;
         constructor();
     }
@@ -2476,14 +2474,14 @@ declare namespace FudgeCore {
         static PROJECTION_ORTHOGRAPHIC(_left: number, _right: number, _bottom: number, _top: number, _near: number, _far: number): Matrix4x4;
         /**
          *
-         * @param _alpha (default = 45)
+         * @param _alpha  (default = 45)
          */
         static PROJECTION_CAVALIER(_alpha: number): Matrix4x4;
         /**
          *
          * @param _alpha (default = 45)
          */
-        static PROJECTION_CABINET(angle: number): Matrix4x4;
+        static PROJECTION_CABINET(_alpha: number): Matrix4x4;
         static PROJECTION_ISOMETRIC(): Matrix4x4;
         /**
          * Rotate this matrix by given vector in the order Z, Y, X. Right hand rotation is used, thumb points in axis direction, fingers curling indicate rotation

@@ -2,7 +2,7 @@
 /// <reference path="CameraOrthographic.ts"/>
 
 namespace FudgeCore {
-    export class CameraCabinett extends CameraOrthographic {
+    export class CameraCabinet extends CameraOrthographic {
 
         private alpha: number = 65;
 

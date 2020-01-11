@@ -6,13 +6,16 @@ namespace FudgeCore {
    * @authors Jascha Karagöl, HFU, 2019 | Jirka Dell'Oro-Friedl, HFU, 2019
    */
   export class ComponentCamera extends Component {
+
     public camera: Camera; // The camera used to render
 
     public pivot: Matrix4x4 = Matrix4x4.IDENTITY;
  
 
+
     public setType<T extends Camera>(_class: new () => T): void {
         this.camera = new _class(); 
+        console.log(this.camera);
     }
 
 

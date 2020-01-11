@@ -185,28 +185,26 @@ namespace FudgeCore {
      * Adjust the camera parameters to fit the rendering into the render vieport
      */
     public adjustCamera(): void {
-     // let rect: Rectangle = RenderManager.getViewportRectangle();
+      //   let rect: Rectangle = RenderManager.getViewportRectangle();
       switch (this.cmpCamera.camera.projection) {
         case PROJECTION.CENTRAL:
-            console.log("Perspective");
-            this.cmpCamera.setType(CameraCentral);
-            break;
+          this.cmpCamera.setType(CameraCentral);
+          break;
         case PROJECTION.ORTHOGRAPHIC:
-            console.log("Orthographic");
-            this.cmpCamera.setType(CameraOrthographic);
-            break;
+          this.cmpCamera.setType(CameraOrthographic);
+          break;
         case PROJECTION.CABINET:
-            console.log("Cabinett");
-            this.cmpCamera.setType(CameraCabinett);
-            break;
+          this.cmpCamera.setType(CameraCabinet);
+          break;
         case PROJECTION.CAVALIER:
-            console.log("Cavalier");
-           // this.cmpCamera.setType(CameraCavalier);
-            break;
+          this.cmpCamera.setType(CameraCavalier);
+          break;
+        case PROJECTION.ISOMETRIC:
+          this.cmpCamera.setType(CameraIsometric);
         default:
-            console.log("No camera projection selected");
-            break;
-    }
+          console.log("No camera projection selected");
+          break;
+      }
     }
     // #endregion
 

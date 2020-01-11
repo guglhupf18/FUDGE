@@ -26,23 +26,14 @@ namespace FudgeCore {
         public backgroundColor: Color = new Color(0, 0, 0.3, 1); // The color of the background the camera will render.
         public backgroundEnabled: boolean = true; // Determines whether or not the background of this camera will be rendered.
         // TODO: examine, if background should be an attribute of Camera or Viewport
-        public fieldOfView: number = null; // The camera's sensorangle.
-        public aspectRatio: number = null;
-        public direction: FIELD_OF_VIEW = null;
+
+        public fieldOfView: number; // The camera's sensorangle.
+        public aspectRatio: number;
+        public direction: FIELD_OF_VIEW;
 
         constructor() {
             this.pivot = Matrix4x4.IDENTITY;
         }
-
-        public setProjection(cam: Camera): void {            
-            this.projection = cam.projection;
-            
-        }
-      
-        public getProjection(): PROJECTION {
-            return this.projection;
-        }
-
 
         public getBackgoundColor(): Color {
             return this.backgroundColor;
@@ -51,6 +42,17 @@ namespace FudgeCore {
         public getBackgroundEnabled(): boolean {
             return this.backgroundEnabled;
         }
+        
+           /**
+         * Returns the multiplikation of the worldtransformation of the camera container with the projection matrix
+         * @returns the world-projection-matrix
+         * 
+         */
+        public get ViewProjectionMatrix(): Matrix4x4 {
+            
+            return this.transform;
+        }
+
         /**
         * Return the calculated normed dimension of the projection space
         */
@@ -58,7 +60,7 @@ namespace FudgeCore {
             let tanFov: number = Math.tan(Math.PI * this.fieldOfView / 360); // Half of the angle, to calculate dimension from the center -> right angle
             let tanHorizontal: number = 0;
             let tanVertical: number = 0;
-
+            
             if (this.direction == FIELD_OF_VIEW.DIAGONAL) {
                 let aspect: number = Math.sqrt(this.aspectRatio);
                 tanHorizontal = tanFov * aspect;
@@ -76,15 +78,6 @@ namespace FudgeCore {
             return Rectangle.GET(0, 0, tanHorizontal * 2, tanVertical * 2);
         }
 
-           /**
-         * Returns the multiplikation of the worldtransformation of the camera container with the projection matrix
-         * @returns the world-projection-matrix
-         * 
-         */
-        public get ViewProjectionMatrix(): Matrix4x4 {
-            
-            return this.transform;
-        }
 
         
         //#region Transfer

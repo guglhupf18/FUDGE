@@ -79,7 +79,7 @@ namespace ScreenToRayToScreen {
     console.groupEnd();
 
     let rayEnd: ƒ.Vector3 = ƒ.Vector3.SUM(ray.origin, ray.direction);
-    let projection: ƒ.Vector3 = camera.cmpCamera.project(rayEnd);
+    let projection: ƒ.Vector3 = camera.cmpCamera.camera.transform.translation;
     // let screen: ƒ.Vector2 = ƒ.RenderManager.rectClip.pointToRect(projection.toVector2(), viewport.getCanvasRectangle());
     let screen: ƒ.Vector2 = viewport.pointClipToClient(projection.toVector2());
     console.group("end");
@@ -139,7 +139,7 @@ namespace ScreenToRayToScreen {
 
   function drawLabels(): void {
     let mtxCube: ƒ.Matrix4x4 = root.getChildrenByName("Cube")[0].mtxWorld;
-    let projection: ƒ.Vector3 = camera.cmpCamera.project(mtxCube.translation);
+    let projection: ƒ.Vector3 = camera.cmpCamera.camera.transform.translation;
     let posCanvas: ƒ.Vector2 = viewport.pointClipToCanvas(projection.toVector2());
     let posClient: ƒ.Vector2 = viewport.pointClipToClient(projection.toVector2());
     let posScreen: ƒ.Vector2 = viewport.pointClientToScreen(posClient);
