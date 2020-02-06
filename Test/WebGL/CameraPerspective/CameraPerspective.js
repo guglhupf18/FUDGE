@@ -9,8 +9,9 @@ var CameraPerspective;
         ƒ.RenderManager.initialize(true);
         // default camera setting is isometric
         if (cmpCamera.camera == null) {
-            cmpCamera.setType(ƒ.CameraIsometric);
-            //    cmpCamera.pivot.translation = new ƒ.Vector3(0, 6, 5);
+            cmpCamera.setType(ƒ.CameraCentral);
+            cmpCamera.pivot.translate(new ƒ.Vector3(1, 1, 10));
+            cmpCamera.pivot.lookAt(new ƒ.Vector3());
         }
         viewport = new ƒ.Viewport();
         /**
@@ -19,6 +20,7 @@ var CameraPerspective;
         let baseNode = new ƒ.Node("basenode");
         baseNode.appendChild(createHouse());
         baseNode.appendChild(createGrid());
+        baseNode.appendChild(createLight());
         viewport.initialize("Viewport", baseNode, cmpCamera, canvas);
         // Eventlistener  
         viewport.setFocus(true);
@@ -28,7 +30,7 @@ var CameraPerspective;
     }
     function createHouse() {
         let meshBasement = new ƒ.MeshCube();
-        let mtrLightBlue = new ƒ.Material("LightBlue", ƒ.ShaderUniColor, new ƒ.CoatColored(new ƒ.Color(0.1, 0.9, 1, 1)));
+        let mtrLightBlue = new ƒ.Material("LightBlue", ƒ.ShaderFlat, new ƒ.CoatColored(new ƒ.Color(1, 1, 1, 1)));
         let cmpMeshBasement = new ƒ.ComponentMesh(meshBasement);
         let cmpMaterialBasement = new ƒ.ComponentMaterial(mtrLightBlue);
         let cmpTransformBasement = new ƒ.ComponentTransform();
@@ -63,7 +65,7 @@ var CameraPerspective;
         for (let i = -gridSize; i <= gridSize; i++) {
             let xAxis = new ƒ.Node("x" + i.toString());
             let zAxis = new ƒ.Node("z" + i.toString());
-            let mtrWhite = new ƒ.Material("White", ƒ.ShaderUniColor, new ƒ.CoatColored(new ƒ.Color(0.95, 0.7, 0.8)));
+            let mtrWhite = new ƒ.Material("White", ƒ.ShaderUniColor, new ƒ.CoatColored(new ƒ.Color(0.95, 0.9, 0.9)));
             let cmpMaterialWhiteX = new ƒ.ComponentMaterial(mtrWhite);
             let mesh = new ƒ.MeshQuad();
             let cmpMesh = new ƒ.ComponentMesh(mesh);
@@ -97,7 +99,8 @@ var CameraPerspective;
             case ƒ.KEYBOARD_CODE.ONE:
                 console.log("central");
                 cmpCamera.setType(ƒ.CameraCentral);
-                cmpCamera.pivot.translation = new ƒ.Vector3(0, 0, 5);
+                cmpCamera.pivot.translation = new ƒ.Vector3(0, 5, 0);
+                cmpCamera.camera.pivot.lookAt(new ƒ.Vector3(0, 0, 0));
                 break;
             case ƒ.KEYBOARD_CODE.TWO:
                 console.log("ortho");
@@ -119,6 +122,20 @@ var CameraPerspective;
                 console.log("Invalid Input");
         }
         viewport.draw();
+    }
+    function createLight() {
+        let node = new ƒ.Node("light");
+        let light = new ƒ.LightAmbient();
+        let lightColor = new ƒ.Color(1, 0.4, 0.5, 1);
+        light.color = lightColor;
+        let cmpLight = new ƒ.ComponentLight();
+        cmpLight.light = light;
+        let cmpTransform = new ƒ.ComponentTransform();
+        cmpTransform.local.translation = new ƒ.Vector3(0, 5, 0);
+        let cmpLightAmbient = new ƒ.ComponentLight(new ƒ.LightDirectional(new ƒ.Color(1, 1, 1, 1)));
+        cmpLightAmbient.pivot.lookAt(new ƒ.Vector3(1, -1, 0));
+        node.addComponent(cmpLightAmbient);
+        return node;
     }
 })(CameraPerspective || (CameraPerspective = {}));
 //# sourceMappingURL=CameraPerspective.js.map

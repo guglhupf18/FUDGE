@@ -1380,9 +1380,6 @@ declare namespace FudgeCore {
         transform: Matrix4x4;
         backgroundColor: Color;
         backgroundEnabled: boolean;
-        fieldOfView: number;
-        aspectRatio: number;
-        direction: FIELD_OF_VIEW;
         constructor();
         getBackgoundColor(): Color;
         getBackgroundEnabled(): boolean;
@@ -1450,6 +1447,8 @@ declare namespace FudgeCore {
         getAspect(): number;
         getFieldOfView(): number;
         getDirection(): FIELD_OF_VIEW;
+        getProjectionRectangle(): Rectangle;
+        serialize(): Serialization;
     }
 }
 declare namespace FudgeCore {
@@ -1466,11 +1465,11 @@ declare namespace FudgeCore {
  *
  */
 declare namespace FudgeCore {
-    class CameraStereo {
+    class CameraStereo extends Camera {
         aspect: number;
         eyeSep: number;
-        lCamera: ComponentCamera;
-        rCamera: ComponentCamera;
+        lCamera: Camera;
+        rCamera: Camera;
         CameraStereo(): void;
     }
 }

@@ -7,12 +7,16 @@
  * 
  *
  */
+/// <reference path="Camera.ts"/>
+
+
 namespace FudgeCore {
-    export class CameraStereo {
+    export class CameraStereo extends Camera {
         public aspect: number = 1.0;
         public eyeSep: number = 0.064;
-        public lCamera: ComponentCamera = new ComponentCamera;
-        public rCamera: ComponentCamera = new ComponentCamera;
+        public lCamera: Camera = new Camera;
+        public rCamera: Camera = new Camera;
+        
         public CameraStereo(): void {
      ///       this.getFieldOfView();
         }

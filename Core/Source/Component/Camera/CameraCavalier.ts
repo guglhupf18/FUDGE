@@ -4,8 +4,7 @@
 namespace FudgeCore {
     export class CameraCavalier extends CameraOrthographic {
 
-        private alpha: number = 45;
-        
+        private alpha: number = 45;        
        
         constructor() {
             super();

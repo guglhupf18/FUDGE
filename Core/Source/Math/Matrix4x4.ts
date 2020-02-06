@@ -393,7 +393,7 @@ namespace FudgeCore {
         0, 0, (_near + _far) * rangeInv, -1,
         0, 0, _near * _far * rangeInv * 2, 0
       ]);
-
+      
       if (_direction == FIELD_OF_VIEW.DIAGONAL) {
         _aspect = Math.sqrt(_aspect);
         matrix.data[0] = f / _aspect;
@@ -403,7 +403,7 @@ namespace FudgeCore {
         matrix.data[0] = f / _aspect;
       else //FOV_DIRECTION.HORIZONTAL
         matrix.data[5] = f * _aspect;
-        
+      
       return matrix;
     }
 
@@ -454,7 +454,7 @@ namespace FudgeCore {
       matrix.data.set([
         1, 0, 0, 0,
         0, 1, 0, 0,
-        Math.cos(angleInRadians), Math.sin(angle), 0, 0,
+        Math.cos(angleInRadians), Math.sin(angleInRadians), 0, 0,
         0, 0, 0, 1
 
       ]);
@@ -463,7 +463,7 @@ namespace FudgeCore {
     }
     /**
      * 
-     * @param _alpha (default = 45)
+     * @param _alpha (default = 65)
      */
     public static PROJECTION_CABINET(_alpha: number): Matrix4x4 {
       const matrix: Matrix4x4 = Recycler.get(Matrix4x4);

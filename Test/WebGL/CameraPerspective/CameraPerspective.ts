@@ -13,9 +13,9 @@ namespace CameraPerspective {
 
         // default camera setting is isometric
         if (cmpCamera.camera == null) {
-            cmpCamera.setType(ƒ.CameraIsometric);
-        //    cmpCamera.pivot.translation = new ƒ.Vector3(0, 6, 5);
-                
+            cmpCamera.setType(ƒ.CameraCentral);
+            cmpCamera.pivot.translate(new ƒ.Vector3(1, 1, 10));
+            cmpCamera.pivot.lookAt(new ƒ.Vector3());
         }
 
         viewport = new ƒ.Viewport();
@@ -25,9 +25,12 @@ namespace CameraPerspective {
         */
         let baseNode: ƒ.Node = new ƒ.Node("basenode");
 
+
         baseNode.appendChild(createHouse());
         baseNode.appendChild(createGrid());
-        
+
+        baseNode.appendChild(createLight());
+
         viewport.initialize("Viewport", baseNode, cmpCamera, canvas);
 
         // Eventlistener  
@@ -41,7 +44,7 @@ namespace CameraPerspective {
 
     function createHouse(): ƒ.Node {
         let meshBasement: ƒ.MeshCube = new ƒ.MeshCube();
-        let mtrLightBlue: ƒ.Material = new ƒ.Material("LightBlue", ƒ.ShaderUniColor, new ƒ.CoatColored(new ƒ.Color(0.1, 0.9, 1, 1)));
+        let mtrLightBlue: ƒ.Material = new ƒ.Material("LightBlue", ƒ.ShaderFlat, new ƒ.CoatColored(new ƒ.Color(1, 1, 1, 1)));
 
         let cmpMeshBasement: ƒ.ComponentMesh = new ƒ.ComponentMesh(meshBasement);
         let cmpMaterialBasement: ƒ.ComponentMaterial = new ƒ.ComponentMaterial(mtrLightBlue);
@@ -49,7 +52,6 @@ namespace CameraPerspective {
         cmpTransformBasement.local.translation = new ƒ.Vector3(0, 0.5, 0);
 
         let basement: ƒ.Node = new ƒ.Node("basement");
-
 
         basement.addComponent(cmpMeshBasement);
         basement.addComponent(cmpMaterialBasement);
@@ -87,7 +89,7 @@ namespace CameraPerspective {
             let xAxis: ƒ.Node = new ƒ.Node("x" + i.toString());
             let zAxis: ƒ.Node = new ƒ.Node("z" + i.toString());
 
-            let mtrWhite: ƒ.Material = new ƒ.Material("White", ƒ.ShaderUniColor, new ƒ.CoatColored(new ƒ.Color(0.95, 0.7, 0.8)));
+            let mtrWhite: ƒ.Material = new ƒ.Material("White", ƒ.ShaderUniColor, new ƒ.CoatColored(new ƒ.Color(0.95, 0.9, 0.9)));
 
             let cmpMaterialWhiteX: ƒ.ComponentMaterial = new ƒ.ComponentMaterial(mtrWhite);
             let mesh: ƒ.MeshQuad = new ƒ.MeshQuad();
@@ -134,7 +136,8 @@ namespace CameraPerspective {
                 console.log("central");
                 cmpCamera.setType(ƒ.CameraCentral);
 
-                cmpCamera.pivot.translation = new ƒ.Vector3(0, 0, 5);
+                cmpCamera.pivot.translation = new ƒ.Vector3(0, 5, 0);
+                cmpCamera.camera.pivot.lookAt(new  ƒ.Vector3(0, 0, 0));
                 break;
             case ƒ.KEYBOARD_CODE.TWO:
                 console.log("ortho");
@@ -160,4 +163,22 @@ namespace CameraPerspective {
         viewport.draw();
     }
 
+    function createLight(): ƒ.Node {
+        let node: ƒ.Node = new ƒ.Node("light");
+        let light: ƒ.LightAmbient = new ƒ.LightAmbient();
+        let lightColor: ƒ.Color = new ƒ.Color(1, 0.4, 0.5, 1);       
+        light.color = lightColor;
+
+        let cmpLight: ƒ.ComponentLight = new ƒ.ComponentLight();
+        cmpLight.light = light;
+        let cmpTransform: ƒ.ComponentTransform = new ƒ.ComponentTransform();
+        cmpTransform.local.translation = new ƒ.Vector3(0, 5, 0);
+
+        let cmpLightAmbient: ƒ.ComponentLight = new ƒ.ComponentLight (new ƒ.LightDirectional(new ƒ.Color(1, 1, 1, 1)));
+        cmpLightAmbient.pivot.lookAt(new  ƒ.Vector3(1, -1, 0));
+
+        node.addComponent(cmpLightAmbient);
+
+        return node;
+    }
 }
