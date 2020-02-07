@@ -185,10 +185,11 @@ namespace FudgeCore {
      * Adjust the camera parameters to fit the rendering into the render vieport
      */
     public adjustCamera(): void {
-      //let rect: Rectangle = RenderManager.getCanvasRect();
+    //  let rect: Rectangle = RenderManager.getCanvasRect();
       
       switch (this.cmpCamera.camera.projection) {
         case PROJECTION.CENTRAL:
+         
           this.cmpCamera.setType(CameraCentral);
           break;
         case PROJECTION.ORTHOGRAPHIC:

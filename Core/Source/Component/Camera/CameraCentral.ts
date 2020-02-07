@@ -13,15 +13,18 @@ namespace FudgeCore {
     export class CameraCentral extends Camera {
 
         public fieldOfView: number = 45; // The camera's sensorangle.
-        public aspectRatio: number = 1.0;
+        public aspectRatio: number = 1;
         public direction: FIELD_OF_VIEW = FIELD_OF_VIEW.DIAGONAL;
         public near: number = 1;
-        public far: number = 2000;
+        public far: number = 200;
+        public translation: Vector3 = new Vector3(0, 0, 5);
 
         constructor() {
             super();
             this.projection = PROJECTION.CENTRAL;
+            this.pivot.lookAt(new Vector3(0, 0, 0), Vector3.Y(1));
             this.transform = Matrix4x4.PROJECTION_CENTRAL(this.aspectRatio, this.fieldOfView, this.near, this.far, this.direction);
+            console.log(this);
            
         }
 

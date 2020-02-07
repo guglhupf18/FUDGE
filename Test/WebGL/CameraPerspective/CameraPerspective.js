@@ -11,7 +11,8 @@ var CameraPerspective;
         if (cmpCamera.camera == null) {
             cmpCamera.setType(ƒ.CameraCentral);
             cmpCamera.pivot.translate(new ƒ.Vector3(1, 1, 10));
-            cmpCamera.pivot.lookAt(new ƒ.Vector3());
+            //  cmpCamera.pivot.lookAt(new ƒ.Vector3());
+            //cmpCamera.camera.pivot.lookAt(new ƒ.Vector3());
         }
         viewport = new ƒ.Viewport();
         /**
@@ -30,7 +31,7 @@ var CameraPerspective;
     }
     function createHouse() {
         let meshBasement = new ƒ.MeshCube();
-        let mtrLightBlue = new ƒ.Material("LightBlue", ƒ.ShaderFlat, new ƒ.CoatColored(new ƒ.Color(1, 1, 1, 1)));
+        let mtrLightBlue = new ƒ.Material("LightBlue", ƒ.ShaderUniColor, new ƒ.CoatColored(new ƒ.Color(1, 1, 1, 1)));
         let cmpMeshBasement = new ƒ.ComponentMesh(meshBasement);
         let cmpMaterialBasement = new ƒ.ComponentMaterial(mtrLightBlue);
         let cmpTransformBasement = new ƒ.ComponentTransform();
@@ -99,8 +100,6 @@ var CameraPerspective;
             case ƒ.KEYBOARD_CODE.ONE:
                 console.log("central");
                 cmpCamera.setType(ƒ.CameraCentral);
-                cmpCamera.pivot.translation = new ƒ.Vector3(0, 5, 0);
-                cmpCamera.camera.pivot.lookAt(new ƒ.Vector3(0, 0, 0));
                 break;
             case ƒ.KEYBOARD_CODE.TWO:
                 console.log("ortho");

@@ -21,7 +21,7 @@ namespace FudgeCore {
     export class Camera {
         public pivot: Matrix4x4 = Matrix4x4.IDENTITY;
         public projection: PROJECTION; // the projection of the camera (default = perspective)
-        public transform: Matrix4x4; // The matrix to multiply each scene objects transformation by, to determine where it will be drawn.
+        public transform: Matrix4x4 = Matrix4x4.IDENTITY; // The matrix to multiply each scene objects transformation by, to determine where it will be drawn.
 
         public backgroundColor: Color = new Color(0, 0, 0.3, 1); // The color of the background the camera will render.
         public backgroundEnabled: boolean = true; // Determines whether or not the background of this camera will be rendered.

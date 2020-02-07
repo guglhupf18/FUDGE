@@ -15,7 +15,8 @@ namespace CameraPerspective {
         if (cmpCamera.camera == null) {
             cmpCamera.setType(ƒ.CameraCentral);
             cmpCamera.pivot.translate(new ƒ.Vector3(1, 1, 10));
-            cmpCamera.pivot.lookAt(new ƒ.Vector3());
+          //  cmpCamera.pivot.lookAt(new ƒ.Vector3());
+            //cmpCamera.camera.pivot.lookAt(new ƒ.Vector3());
         }
 
         viewport = new ƒ.Viewport();
@@ -44,7 +45,7 @@ namespace CameraPerspective {
 
     function createHouse(): ƒ.Node {
         let meshBasement: ƒ.MeshCube = new ƒ.MeshCube();
-        let mtrLightBlue: ƒ.Material = new ƒ.Material("LightBlue", ƒ.ShaderFlat, new ƒ.CoatColored(new ƒ.Color(1, 1, 1, 1)));
+        let mtrLightBlue: ƒ.Material = new ƒ.Material("LightBlue", ƒ.ShaderUniColor, new ƒ.CoatColored(new ƒ.Color(1, 1, 1, 1)));
 
         let cmpMeshBasement: ƒ.ComponentMesh = new ƒ.ComponentMesh(meshBasement);
         let cmpMaterialBasement: ƒ.ComponentMaterial = new ƒ.ComponentMaterial(mtrLightBlue);
@@ -135,9 +136,7 @@ namespace CameraPerspective {
             case ƒ.KEYBOARD_CODE.ONE:
                 console.log("central");
                 cmpCamera.setType(ƒ.CameraCentral);
-
-                cmpCamera.pivot.translation = new ƒ.Vector3(0, 5, 0);
-                cmpCamera.camera.pivot.lookAt(new  ƒ.Vector3(0, 0, 0));
+                
                 break;
             case ƒ.KEYBOARD_CODE.TWO:
                 console.log("ortho");

@@ -1443,6 +1443,7 @@ declare namespace FudgeCore {
         direction: FIELD_OF_VIEW;
         near: number;
         far: number;
+        translation: Vector3;
         constructor();
         getAspect(): number;
         getFieldOfView(): number;
@@ -2478,7 +2479,7 @@ declare namespace FudgeCore {
         static PROJECTION_CAVALIER(_alpha: number): Matrix4x4;
         /**
          *
-         * @param _alpha (default = 45)
+         * @param _alpha (default = 65)
          */
         static PROJECTION_CABINET(_alpha: number): Matrix4x4;
         static PROJECTION_ISOMETRIC(): Matrix4x4;
@@ -3294,6 +3295,16 @@ declare namespace FudgeCore {
      */
     class Shader {
         /** The type of coat that can be used with this shader to create a material */
+        static getCoat(): typeof Coat;
+        static getVertexShaderSource(): string;
+        static getFragmentShaderSource(): string;
+    }
+}
+declare namespace FudgeCore {
+    /**
+    * basic barrel distortion shader
+    */
+    class ShaderBarrelDistortion extends Shader {
         static getCoat(): typeof Coat;
         static getVertexShaderSource(): string;
         static getFragmentShaderSource(): string;
