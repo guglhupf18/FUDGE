@@ -119,6 +119,7 @@ namespace FudgeCore {
          * Convert light data to flat arrays
          * TODO: this method appears to be obsolete...?
          */
+        /*
         protected static createRenderLights(_lights: MapLightTypeToLightList): RenderLights {
             let renderLights: RenderLights = {};
             for (let entry of _lights) {
@@ -151,6 +152,7 @@ namespace FudgeCore {
         /**
          * Set light data in shaders
          */
+        /*
         protected static setLightsInShader(_renderShader: RenderShader, _lights: MapLightTypeToLightList): void {
             RenderOperator.useProgram(_renderShader);
             let uni: { [name: string]: WebGLUniformLocation } = _renderShader.uniforms;
@@ -185,7 +187,7 @@ namespace FudgeCore {
             }
             // debugger;
         }
-
+**/
         /**
          * Draw a mesh buffer using the given infos and the complete projection matrix
          * @param _renderShader 

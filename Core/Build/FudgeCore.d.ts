@@ -858,11 +858,6 @@ declare namespace FudgeCore {
          * Convert light data to flat arrays
          * TODO: this method appears to be obsolete...?
          */
-        protected static createRenderLights(_lights: MapLightTypeToLightList): RenderLights;
-        /**
-         * Set light data in shaders
-         */
-        protected static setLightsInShader(_renderShader: RenderShader, _lights: MapLightTypeToLightList): void;
         /**
          * Draw a mesh buffer using the given infos and the complete projection matrix
          * @param _renderShader
@@ -1302,64 +1297,14 @@ declare namespace FudgeCore {
     }
 }
 declare namespace FudgeCore {
-    enum FIELD_OF_VIEW {
-        HORIZONTAL = 0,
-        VERTICAL = 1,
-        DIAGONAL = 2
-    }
-    /**
-     * Defines identifiers for the various projections a camera can provide.
-     * TODO: change back to number enum if strings not needed
-     */
-    enum PROJECTION {
-        CENTRAL = "central",
-        ORTHOGRAPHIC = "orthographic",
-        DIMETRIC = "dimetric",
-        STEREO = "stereo"
-    }
     /**
      * The camera component holds the projection-matrix and other data needed to render a scene from the perspective of the node it is attached to.
      * @authors Jascha Karagöl, HFU, 2019 | Jirka Dell'Oro-Friedl, HFU, 2019
      */
     class ComponentCamera extends Component {
+        camera: Camera;
         pivot: Matrix4x4;
-        backgroundColor: Color;
-        private projection;
-        private transform;
-        private fieldOfView;
-        private aspectRatio;
-        private direction;
-        private backgroundEnabled;
-        getProjection(): PROJECTION;
-        getBackgroundEnabled(): boolean;
-        getAspect(): number;
-        getFieldOfView(): number;
-        getDirection(): FIELD_OF_VIEW;
-        /**
-         * Returns the multiplikation of the worldtransformation of the camera container with the projection matrix
-         * @returns the world-projection-matrix
-         */
-        readonly ViewProjectionMatrix: Matrix4x4;
-        /**
-         * Set the camera to perspective projection. The world origin is in the center of the canvaselement.
-         * @param _aspect The aspect ratio between width and height of projectionspace.(Default = canvas.clientWidth / canvas.ClientHeight)
-         * @param _fieldOfView The field of view in Degrees. (Default = 45)
-         * @param _direction The plane on which the fieldOfView-Angle is given
-         */
-        projectCentral(_aspect?: number, _fieldOfView?: number, _direction?: FIELD_OF_VIEW): void;
-        /**
-         * Set the camera to orthographic projection. The origin is in the top left corner of the canvas.
-         * @param _left The positionvalue of the projectionspace's left border. (Default = 0)
-         * @param _right The positionvalue of the projectionspace's right border. (Default = canvas.clientWidth)
-         * @param _bottom The positionvalue of the projectionspace's bottom border.(Default = canvas.clientHeight)
-         * @param _top The positionvalue of the projectionspace's top border.(Default = 0)
-         */
-        projectOrthographic(_left?: number, _right?: number, _bottom?: number, _top?: number): void;
-        /**
-         * Return the calculated normed dimension of the projection surface, that is in the hypothetical distance of 1 to the camera
-         */
-        getProjectionRectangle(): Rectangle;
-        project(_pointInWorldSpace: Vector3): Vector3;
+        setType<T extends Camera>(_class: new () => T): void;
         serialize(): Serialization;
         deserialize(_serialization: Serialization): Serializable;
         getMutatorAttributeTypes(_mutator: Mutator): MutatorAttributeTypes;
@@ -1484,6 +1429,125 @@ declare namespace FudgeCore {
         serialize(): Serialization;
         deserialize(_serialization: Serialization): Serializable;
         protected reduceMutator(_mutator: Mutator): void;
+    }
+}
+declare namespace FudgeCore {
+    enum FIELD_OF_VIEW {
+        HORIZONTAL = 0,
+        VERTICAL = 1,
+        DIAGONAL = 2
+    }
+    /**
+     * Defines identifiers for the various projections a camera can provide.
+     * TODO: change back to number enum if strings not needed
+     */
+    enum PROJECTION {
+        CENTRAL = "central",
+        ORTHOGRAPHIC = "orthographic",
+        DIMETRIC = "dimetric",
+        STEREO = "stereo",
+        CAVALIER = "cavalier",
+        CABINET = "cabinet",
+        ISOMETRIC = "isometric"
+    }
+    class Camera {
+        pivot: Matrix4x4;
+        projection: PROJECTION;
+        transform: Matrix4x4;
+        backgroundColor: Color;
+        backgroundEnabled: boolean;
+        constructor();
+        getBackgoundColor(): Color;
+        getBackgroundEnabled(): boolean;
+        /**
+      * Returns the multiplikation of the worldtransformation of the camera container with the projection matrix
+      * @returns the world-projection-matrix
+      *
+      */
+        readonly ViewProjectionMatrix: Matrix4x4;
+        /**
+        * Return the calculated normed dimension of the projection space
+        */
+        getProjectionRectangle(): Rectangle;
+        serialize(): Serialization;
+        deserialize(_serialization: Serialization): Serializable;
+    }
+}
+declare namespace FudgeCore {
+    /**
+     **
+     * Set the camera to orthographic projection. The origin is in the top left corner of the canvas.
+     * @param _left The positionvalue of the projectionspace's left border. (Default = 0)
+     * @param _right The positionvalue of the projectionspace's right border. (Default = canvas.clientWidth)
+     * @param _bottom The positionvalue of the projectionspace's bottom border.(Default = canvas.clientHeight)
+     * @param _top The positionvalue of the projectionspace's top border.(Default = 0)
+     */
+    class CameraOrthographic extends Camera {
+        private left;
+        private right;
+        private bottom;
+        private top;
+        private near;
+        private far;
+        constructor();
+        setProjectionBorder(leftBorder: number, topBorder: number, nearClippingPlane: number, farClippingPlane: number): void;
+    }
+}
+declare namespace FudgeCore {
+    class CameraCabinet extends CameraOrthographic {
+        private alpha;
+        constructor();
+    }
+}
+declare namespace FudgeCore {
+    class CameraCavalier extends CameraOrthographic {
+        private alpha;
+        constructor();
+    }
+}
+/**
+ * @param _aspect The aspect ratio between width and height of projectionspace.(Default = canvas.clientWidth / canvas.ClientHeight)
+ * @param _fieldOfView The field of view in Degrees. (Default = 45)
+ * @param _direction The plane on which the fieldOfView-Angle is given
+ *
+ *
+ */
+declare namespace FudgeCore {
+    class CameraCentral extends Camera {
+        fieldOfView: number;
+        aspectRatio: number;
+        direction: FIELD_OF_VIEW;
+        near: number;
+        far: number;
+        translation: Vector3;
+        constructor();
+        getAspect(): number;
+        getFieldOfView(): number;
+        getDirection(): FIELD_OF_VIEW;
+        getProjectionRectangle(): Rectangle;
+        serialize(): Serialization;
+    }
+}
+declare namespace FudgeCore {
+    class CameraIsometric extends CameraOrthographic {
+        constructor();
+    }
+}
+/**
+ * Effects: Anaglyph; Paralax; Stereo
+ *
+ * Properties:
+ * float aspect = 1; float
+ *
+ *
+ */
+declare namespace FudgeCore {
+    class CameraStereo extends Camera {
+        aspect: number;
+        eyeSep: number;
+        lCamera: Camera;
+        rCamera: Camera;
+        CameraStereo(): void;
     }
 }
 declare namespace FudgeCore {
@@ -1835,7 +1899,7 @@ declare namespace FudgeCore {
     class Viewport extends EventTargetƒ {
         private static focus;
         name: string;
-        camera: ComponentCamera;
+        cmpCamera: ComponentCamera;
         rectSource: Rectangle;
         rectDestination: Rectangle;
         frameClientToCanvas: FramingScaled;
@@ -2484,6 +2548,10 @@ declare namespace FudgeCore {
          * Returns a matrix that scales coordinates along the x-, y- and z-axis according to the given vector
          */
         static SCALING(_scalar: Vector3): Matrix4x4;
+        /** Main method to call the according projection
+         * @param
+        */
+        static PROJECTION(projection: PROJECTION): void;
         /**
          * Computes and returns a matrix that applies perspective to an object, if its transform is multiplied by it.
          * @param _aspect The aspect ratio between width and height of projectionspace.(Default = canvas.clientWidth / canvas.ClientHeight)
@@ -2502,24 +2570,35 @@ declare namespace FudgeCore {
          * @param _near The positionvalue of the projectionspace's near border.
          * @param _far The positionvalue of the projectionspace's far border
          */
-        static PROJECTION_ORTHOGRAPHIC(_left: number, _right: number, _bottom: number, _top: number, _near?: number, _far?: number): Matrix4x4;
+        static PROJECTION_ORTHOGRAPHIC(_left: number, _right: number, _bottom: number, _top: number, _near: number, _far: number): Matrix4x4;
+        /**
+         *
+         * @param _alpha  (default = 45)
+         */
+        static PROJECTION_CAVALIER(_alpha: number): Matrix4x4;
+        /**
+         *
+         * @param _alpha (default = 65)
+         */
+        static PROJECTION_CABINET(_alpha: number): Matrix4x4;
+        static PROJECTION_ISOMETRIC(): Matrix4x4;
         /**
          * Rotate this matrix by given vector in the order Z, Y, X. Right hand rotation is used, thumb points in axis direction, fingers curling indicate rotation
          * @param _by
          */
-        rotate(_by: Vector3, _fromLeft?: boolean): void;
+        rotate(_by: Vector3): void;
         /**
          * Adds a rotation around the x-Axis to this matrix
          */
-        rotateX(_angleInDegrees: number, _fromLeft?: boolean): void;
+        rotateX(_angleInDegrees: number): void;
         /**
          * Adds a rotation around the y-Axis to this matrix
          */
-        rotateY(_angleInDegrees: number, _fromLeft?: boolean): void;
+        rotateY(_angleInDegrees: number): void;
         /**
          * Adds a rotation around the z-Axis to this matrix
          */
-        rotateZ(_angleInDegrees: number, _fromLeft?: boolean): void;
+        rotateZ(_angleInDegrees: number): void;
         /**
          * Adjusts the rotation of this matrix to face the given target and tilts it to accord with the given up vector
          */
@@ -2559,7 +2638,7 @@ declare namespace FudgeCore {
         /**
          * Multiply this matrix with the given matrix
          */
-        multiply(_matrix: Matrix4x4, _fromLeft?: boolean): void;
+        multiply(_matrix: Matrix4x4): void;
         /**
          * Calculates and returns the euler-angles representing the current rotation of this matrix
          */
@@ -3326,6 +3405,16 @@ declare namespace FudgeCore {
      */
     class Shader {
         /** The type of coat that can be used with this shader to create a material */
+        static getCoat(): typeof Coat;
+        static getVertexShaderSource(): string;
+        static getFragmentShaderSource(): string;
+    }
+}
+declare namespace FudgeCore {
+    /**
+    * basic barrel distortion shader
+    */
+    class ShaderBarrelDistortion extends Shader {
         static getCoat(): typeof Coat;
         static getVertexShaderSource(): string;
         static getFragmentShaderSource(): string;

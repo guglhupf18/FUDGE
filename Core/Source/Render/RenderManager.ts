@@ -181,14 +181,19 @@ namespace FudgeCore {
      * RenderManager passes it on to all shaders used that can process light
      * @param _lights
      */
+
+    /* TODO: RenderManager.setLights not working
+*/
     public static setLights(_lights: MapLightTypeToLightList): void {
-      // let renderLights: RenderLights = RenderManager.createRenderLights(_lights);
-      for (let entry of RenderManager.renderShaders) {
-        let renderShader: RenderShader = entry[1].getReference();
-        RenderManager.setLightsInShader(renderShader, _lights);
-      }
+       //let renderLights: RenderLights = RenderManager.createRenderLights(_lights);
+       //for (let entry of RenderManager.renderShaders) {
+      //  let renderShader: RenderShader = entry[1].getReference();
+       // console.log(renderShader);
+      //  RenderManager.setLights(_lights);
+   // }
       // debugger;
     }
+    
     // #endregion
 
     // #region Rendering
@@ -236,7 +241,7 @@ namespace FudgeCore {
         finalTransform = _node.mtxWorld; // caution, RenderManager is a reference...
 
       // multiply camera matrix
-      let projection: Matrix4x4 = Matrix4x4.MULTIPLICATION(_cmpCamera.ViewProjectionMatrix, finalTransform);
+      let projection: Matrix4x4 = Matrix4x4.MULTIPLICATION(_cmpCamera.camera.ViewProjectionMatrix, finalTransform);
 
       _drawNode(_node, finalTransform, projection);
 

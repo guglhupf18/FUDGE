@@ -60,7 +60,7 @@ var ScreenToRayToScreen;
         ƒ.Debug.log("direction", ray.direction.toString());
         console.groupEnd();
         let rayEnd = ƒ.Vector3.SUM(ray.origin, ray.direction);
-        let projection = ScreenToRayToScreen.camera.component.project(rayEnd);
+        let projection = this.cmpCamera.camera.transform.translation;
         // let screen: ƒ.Vector2 = ƒ.RenderManager.rectClip.pointToRect(projection.toVector2(), viewport.getCanvasRectangle());
         let screen = viewport.pointClipToClient(projection.toVector2());
         console.group("end");
@@ -106,7 +106,7 @@ var ScreenToRayToScreen;
     ScreenToRayToScreen.updateDisplay = updateDisplay;
     function drawLabels() {
         let mtxCube = ScreenToRayToScreen.root.getChildrenByName("Cube")[0].mtxWorld;
-        let projection = ScreenToRayToScreen.camera.component.project(mtxCube.translation);
+        let projection = this.cmpCamera.camera.transform.translation;
         let posCanvas = viewport.pointClipToCanvas(projection.toVector2());
         let posClient = viewport.pointClipToClient(projection.toVector2());
         let posScreen = viewport.pointClientToScreen(posClient);
